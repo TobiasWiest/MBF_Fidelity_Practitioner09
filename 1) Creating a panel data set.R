@@ -216,7 +216,97 @@ htmlreg(
   caption = "Chinese Funds versus CSI Stateowned Enterprises Comp",
   doctype = FALSE,
   caption.above = TRUE)
-?htmlreg
+
 
 #### Asia Pacific ex Japan Factor Models
+
+AsiaPacific_Panel <- AsiaPacific_Panel %>% 
+  left_join(Benchmarks_Factors, by = "date1") 
+
+AsiaPacific_Panel <- rename(AsiaPacific_Panel, CSIStateownedEnterprisesCompPRCNY = `CSIState-ownedEnterprisesCompPRCNY`)
+
+
+AsiaPacific_Panel <- AsiaPacific_Panel %>% 
+  mutate(Funds.RF = MonthlyReturn - RF) %>% 
+  mutate(MSCIACAsiaPacExJPNNRUSD.RF = MSCIACAsiaPacExJPNNRUSD - RF) %>% 
+  mutate(CSI300NRUSD.RF = CSI300NRUSD - RF) %>% 
+  mutate(CSIStateownedEnterprisesCompPRCNY.RF = CSIStateownedEnterprisesCompPRCNY - RF)
+
+model_asiapacexjpn_1factor_10y_FF <- lm(Funds.RF ~ Mkt.RF, data = AsiaPacific_Panel)
+model_asiapacexjpn_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = AsiaPacific_Panel)
+model_asiapacexjpn_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = AsiaPacific_Panel)
+model_asiapacexjpn_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Panel)
+
+model_asiapacexjpn_1factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF, data = AsiaPacific_Panel)
+model_asiapacexjpn_3factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML, data = AsiaPacific_Panel)
+model_asiapacexjpn_4factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML, data = AsiaPacific_Panel)
+model_asiapacexjpn_5factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Panel)
+
+model_asiapacexjpn_1factor_10y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF, data = AsiaPacific_Panel)
+model_asiapacexjpn_3factor_10y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML, data = AsiaPacific_Panel)
+model_asiapacexjpn_4factor_10y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + WML, data = AsiaPacific_Panel)
+model_asiapacexjpn_5factor_10y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Panel)
+
+model_asiapacexjpn_1factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = AsiaPacific_Panel)
+model_asiapacexjpn_3factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = AsiaPacific_Panel)
+model_asiapacexjpn_4factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = AsiaPacific_Panel)
+model_asiapacexjpn_5factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Panel)
+
+library(texreg)
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_10y_FF,
+    model_asiapacexjpn_3factor_10y_FF,
+    model_asiapacexjpn_4factor_10y_FF,
+    model_asiapacexjpn_5factor_10y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_10y_CSI300,
+    model_asiapacexjpn_3factor_10y_CSI300,
+    model_asiapacexjpn_4factor_10y_CSI300,
+    model_asiapacexjpn_5factor_10y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus CSI 300",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_10y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_3factor_10y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_4factor_10y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_5factor_10y_MSCIAsiaPacExJpn 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_10y_CSISOE,
+    model_asiapacexjpn_3factor_10y_CSISOE,
+    model_asiapacexjpn_4factor_10y_CSISOE,
+    model_asiapacexjpn_5factor_10y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#### India
+
+India_Panel <- India_Panel %>% 
+  left_join(Benchmarks_Factors, by = "date1") 
 
