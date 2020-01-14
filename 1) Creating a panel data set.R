@@ -94,10 +94,25 @@ China_Panel <- Full_Equity_Panel %>%
     filter(`Investment Area`  == "China") %>% 
     arrange(year, month)
 
+India_Panel <- Full_Equity_Panel %>% 
+  filter(`Investment Area`  == "India") %>% 
+  arrange(year, month)
 
+AsiaPacific_Panel <- Full_Equity_Panel %>% 
+  filter(`Investment Area`  == "Asia Pacific ex Japan" | `Investment Area`  == "Asia Pacific ex Japan ex Australia") %>% 
+  arrange(year, month)
+
+AsiaEmerg_Panel <- Full_Equity_Panel %>% 
+  filter(`Investment Area`  == "Asia Emerging Mkts") %>% 
+  arrange(year, month)
+
+Large_Panel <- Full_Equity_Panel[grepl("Large", Full_Equity_Panel$EquityStyle),]
+Mid_Panel <- Full_Equity_Panel[grepl("Mid", Full_Equity_Panel$EquityStyle),]
+Small_Panel <- Full_Equity_Panel[grepl("Small", Full_Equity_Panel$EquityStyle),]
+
+# Factors Emerging Markets from Fama French Website
 Emerging_5Factors <- read.csv("Emerging_5_Factors.csv") 
 Emerging_Momentum <- read.csv("Emerging_MOM_Factor.csv") 
-
 Emerging_Factors <- Emerging_5Factors %>% 
       left_join(Emerging_Momentum, by = "Date")
 
@@ -105,24 +120,103 @@ Emerging_Factors <- Emerging_Factors %>%
   mutate(date1 = paste(substring(as.character(Date), 1, 4), substring(as.character(Date),5,6), "28", sep = "-")) %>% 
   mutate(date1 = as.Date(date1))
 
-China_Panel <- China_Panel %>% 
-  left_join(Emerging_Factors, by = "date1") %>% 
-  mutate(R.RF = MonthlyReturn - RF)
 
-model_china_1factor <- lm(R.RF ~ Mkt.RF, data = China_Panel)
-model_china_3factor <- lm(R.RF ~ Mkt.RF + SMB + HML, data = China_Panel)
-model_china_4factor <- lm(R.RF ~ Mkt.RF + SMB + HML + WML, data = China_Panel)
-model_china_5factor <- lm(R.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = China_Panel)
+# Benchmark Returns from Morningstar
+Benchmarks <- read_excel("Benchmark Returns.xlsx")
+Benchmarks <- Benchmarks %>% 
+  mutate(date1 = as.Date(Date))
+
+Benchmarks_Factors <- Emerging_Factors %>% 
+    left_join(Benchmarks, by = "date1") %>% 
+    filter(date1 > "2010-01-01")
+
+
+#### China Factor Models
+
+China_Panel <- China_Panel %>% 
+  left_join(Benchmarks_Factors, by = "date1") 
+
+China_Panel <- rename(China_Panel, CSIStateownedEnterprisesCompPRCNY = `CSIState-ownedEnterprisesCompPRCNY`)
+  
+China_Panel <- China_Panel %>% 
+  mutate(Funds.RF = MonthlyReturn - RF) %>% 
+  mutate(MSCIChinaNRUSD.RF = MSCIChinaNRUSD - RF) %>% 
+  mutate(CSI300NRUSD.RF = CSI300NRUSD - RF) %>% 
+  mutate(CSIStateownedEnterprisesCompPRCNY.RF = CSIStateownedEnterprisesCompPRCNY - RF)
+
+model_china_1factor_10y_FF <- lm(Funds.RF ~ Mkt.RF, data = China_Panel)
+model_china_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = China_Panel)
+model_china_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = China_Panel)
+model_china_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = China_Panel)
+
+model_china_1factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF, data = China_Panel)
+model_china_3factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML, data = China_Panel)
+model_china_4factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML, data = China_Panel)
+model_china_5factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + RMW + CMA, data = China_Panel)
+
+model_china_1factor_10y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF, data = China_Panel)
+model_china_3factor_10y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML, data = China_Panel)
+model_china_4factor_10y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + WML, data = China_Panel)
+model_china_5factor_10y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + RMW + CMA, data = China_Panel)
+
+model_china_1factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = China_Panel)
+model_china_3factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = China_Panel)
+model_china_4factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = China_Panel)
+model_china_5factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = China_Panel)
 
 library(texreg)
 #+ results='asis'
 htmlreg(
   list(
-    model_china_1factor,
-    model_china_3factor,
-    model_china_4factor,
-    model_china_5factor 
+    model_china_1factor_10y_FF,
+    model_china_3factor_10y_FF,
+    model_china_4factor_10y_FF,
+    model_china_5factor_10y_FF 
   ),
   include.ci = FALSE, 
-  caption = "China Factor Models",
-  doctype = FALSE)
+  caption = "Chinese Funds versus Fama French EM Benchmark",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_10y_CSI300,
+    model_china_3factor_10y_CSI300,
+    model_china_4factor_10y_CSI300,
+    model_china_5factor_10y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI 300",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_10y_MSCIChina,
+    model_china_3factor_10y_MSCIChina,
+    model_china_4factor_10y_MSCIChina,
+    model_china_5factor_10y_MSCIChina 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus MSCI China",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_10y_CSISOE,
+    model_china_3factor_10y_CSISOE,
+    model_china_4factor_10y_CSISOE,
+    model_china_5factor_10y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp",
+  doctype = FALSE,
+  caption.above = TRUE)
+?htmlreg
+
+#### Asia Pacific ex Japan Factor Models
+

@@ -11,7 +11,7 @@
 
 <meta name="author" content="tobia" />
 
-<meta name="date" content="2020-01-11" />
+<meta name="date" content="2020-01-14" />
 
 <title>1–Creating-a-panel-data-set.R</title>
 
@@ -365,7 +365,7 @@ summary {
 
 <h1 class="title toc-ignore">1–Creating-a-panel-data-set.R</h1>
 <h4 class="author">tobia</h4>
-<h4 class="date">2020-01-11</h4>
+<h4 class="date">2020-01-14</h4>
 
 </div>
 
@@ -382,11 +382,11 @@ library(dplyr)</code></pre>
 ##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(readxl)
 library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages ----------------------------------------------------------------------------------------- tidyverse 1.2.1 --</code></pre>
+<pre><code>## -- Attaching packages ------------------------------------------------------------------------ tidyverse 1.2.1 --</code></pre>
 <pre><code>## v ggplot2 3.2.1     v purrr   0.3.2
 ## v tibble  2.1.3     v stringr 1.4.0
 ## v readr   1.3.1     v forcats 0.4.0</code></pre>
-<pre><code>## -- Conflicts -------------------------------------------------------------------------------------------- tidyverse_conflicts() --
+<pre><code>## -- Conflicts --------------------------------------------------------------------------- tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>Full_Equity_Sample &lt;- read_excel(&quot;Full Equity Sample.xlsx&quot;)
@@ -856,10 +856,25 @@ China_Panel &lt;- Full_Equity_Panel %&gt;%
     filter(`Investment Area`  == &quot;China&quot;) %&gt;% 
     arrange(year, month)
 
+India_Panel &lt;- Full_Equity_Panel %&gt;% 
+  filter(`Investment Area`  == &quot;India&quot;) %&gt;% 
+  arrange(year, month)
 
+AsiaPacific_Panel &lt;- Full_Equity_Panel %&gt;% 
+  filter(`Investment Area`  == &quot;Asia Pacific ex Japan&quot; | `Investment Area`  == &quot;Asia Pacific ex Japan ex Australia&quot;) %&gt;% 
+  arrange(year, month)
+
+AsiaEmerg_Panel &lt;- Full_Equity_Panel %&gt;% 
+  filter(`Investment Area`  == &quot;Asia Emerging Mkts&quot;) %&gt;% 
+  arrange(year, month)
+
+Large_Panel &lt;- Full_Equity_Panel[grepl(&quot;Large&quot;, Full_Equity_Panel$EquityStyle),]
+Mid_Panel &lt;- Full_Equity_Panel[grepl(&quot;Mid&quot;, Full_Equity_Panel$EquityStyle),]
+Small_Panel &lt;- Full_Equity_Panel[grepl(&quot;Small&quot;, Full_Equity_Panel$EquityStyle),]
+
+# Factors Emerging Markets from Fama French Website
 Emerging_5Factors &lt;- read.csv(&quot;Emerging_5_Factors.csv&quot;) 
 Emerging_Momentum &lt;- read.csv(&quot;Emerging_MOM_Factor.csv&quot;) 
-
 Emerging_Factors &lt;- Emerging_5Factors %&gt;% 
       left_join(Emerging_Momentum, by = &quot;Date&quot;)
 
@@ -867,14 +882,49 @@ Emerging_Factors &lt;- Emerging_Factors %&gt;%
   mutate(date1 = paste(substring(as.character(Date), 1, 4), substring(as.character(Date),5,6), &quot;28&quot;, sep = &quot;-&quot;)) %&gt;% 
   mutate(date1 = as.Date(date1))
 
-China_Panel &lt;- China_Panel %&gt;% 
-  left_join(Emerging_Factors, by = &quot;date1&quot;) %&gt;% 
-  mutate(R.RF = MonthlyReturn - RF)
 
-model_china_1factor &lt;- lm(R.RF ~ Mkt.RF, data = China_Panel)
-model_china_3factor &lt;- lm(R.RF ~ Mkt.RF + SMB + HML, data = China_Panel)
-model_china_4factor &lt;- lm(R.RF ~ Mkt.RF + SMB + HML + WML, data = China_Panel)
-model_china_5factor &lt;- lm(R.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = China_Panel)
+# Benchmark Returns from Morningstar
+Benchmarks &lt;- read_excel(&quot;Benchmark Returns.xlsx&quot;)
+Benchmarks &lt;- Benchmarks %&gt;% 
+  mutate(date1 = as.Date(Date))
+
+Benchmarks_Factors &lt;- Emerging_Factors %&gt;% 
+    left_join(Benchmarks, by = &quot;date1&quot;) %&gt;% 
+    filter(date1 &gt; &quot;2010-01-01&quot;)
+
+
+#### China Factor Models
+
+China_Panel &lt;- China_Panel %&gt;% 
+  left_join(Benchmarks_Factors, by = &quot;date1&quot;) 
+
+China_Panel &lt;- rename(China_Panel, CSIStateownedEnterprisesCompPRCNY = `CSIState-ownedEnterprisesCompPRCNY`)
+  
+China_Panel &lt;- China_Panel %&gt;% 
+  mutate(Funds.RF = MonthlyReturn - RF) %&gt;% 
+  mutate(MSCIChinaNRUSD.RF = MSCIChinaNRUSD - RF) %&gt;% 
+  mutate(CSI300NRUSD.RF = CSI300NRUSD - RF) %&gt;% 
+  mutate(CSIStateownedEnterprisesCompPRCNY.RF = CSIStateownedEnterprisesCompPRCNY - RF)
+
+model_china_1factor_10y_FF &lt;- lm(Funds.RF ~ Mkt.RF, data = China_Panel)
+model_china_3factor_10y_FF &lt;- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = China_Panel)
+model_china_4factor_10y_FF &lt;- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = China_Panel)
+model_china_5factor_10y_FF &lt;- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = China_Panel)
+
+model_china_1factor_10y_CSI300 &lt;- lm(Funds.RF ~ CSI300NRUSD.RF, data = China_Panel)
+model_china_3factor_10y_CSI300 &lt;- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML, data = China_Panel)
+model_china_4factor_10y_CSI300 &lt;- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML, data = China_Panel)
+model_china_5factor_10y_CSI300 &lt;- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + RMW + CMA, data = China_Panel)
+
+model_china_1factor_10y_MSCIChina &lt;- lm(Funds.RF ~ MSCIChinaNRUSD.RF, data = China_Panel)
+model_china_3factor_10y_MSCIChina &lt;- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML, data = China_Panel)
+model_china_4factor_10y_MSCIChina &lt;- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + WML, data = China_Panel)
+model_china_5factor_10y_MSCIChina &lt;- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + RMW + CMA, data = China_Panel)
+
+model_china_1factor_10y_CSISOE &lt;- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = China_Panel)
+model_china_3factor_10y_CSISOE &lt;- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = China_Panel)
+model_china_4factor_10y_CSISOE &lt;- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = China_Panel)
+model_china_5factor_10y_CSISOE &lt;- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = China_Panel)
 
 library(texreg)</code></pre>
 <pre><code>## Version:  1.36.23
@@ -889,17 +939,18 @@ library(texreg)</code></pre>
 ##     extract</code></pre>
 <pre class="r"><code>htmlreg(
   list(
-    model_china_1factor,
-    model_china_3factor,
-    model_china_4factor,
-    model_china_5factor 
+    model_china_1factor_10y_FF,
+    model_china_3factor_10y_FF,
+    model_china_4factor_10y_FF,
+    model_china_5factor_10y_FF 
   ),
   include.ci = FALSE, 
-  caption = &quot;China Factor Models&quot;,
-  doctype = FALSE)</code></pre>
+  caption = &quot;Chinese Funds versus Fama French EM Benchmark&quot;,
+  doctype = FALSE,
+  caption.above = TRUE)</code></pre>
 <table cellspacing="0" align="center" style="border: none;">
-<caption align="bottom" style="margin-top:0.3em;">
-China Factor Models
+<caption align="top" style="margin-bottom:0.3em;">
+Chinese Funds versus Fama French EM Benchmark
 </caption>
 <tr>
 <th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
@@ -1201,6 +1252,954 @@ RMSE
 </td>
 </tr>
 </table>
+<pre class="r"><code>htmlreg(
+  list(
+    model_china_1factor_10y_CSI300,
+    model_china_3factor_10y_CSI300,
+    model_china_4factor_10y_CSI300,
+    model_china_5factor_10y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = &quot;Chinese Funds versus CSI 300&quot;,
+  doctype = FALSE,
+  caption.above = TRUE)</code></pre>
+<table cellspacing="0" align="center" style="border: none;">
+<caption align="top" style="margin-bottom:0.3em;">
+Chinese Funds versus CSI 300
+</caption>
+<tr>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b></b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 1</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 2</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 3</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 4</b>
+</th>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+(Intercept)
+</td>
+<td style="padding-right: 12px; border: none;">
+0.12<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.11<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.14<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.41<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+CSI300NRUSD.RF
+</td>
+<td style="padding-right: 12px; border: none;">
+0.74<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.74<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.74<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.66<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+SMB
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.10<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.09<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.00
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+HML
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.01
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.00
+</td>
+<td style="padding-right: 12px; border: none;">
+0.30<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+WML
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.04<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+RMW
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.51<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+CMA
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-1.24<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="border-top: 1px solid black;">
+R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="border-top: 1px solid black;">
+0.57
+</td>
+<td style="border-top: 1px solid black;">
+0.57
+</td>
+<td style="border-top: 1px solid black;">
+0.58
+</td>
+<td style="border-top: 1px solid black;">
+0.61
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Adj. R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.57
+</td>
+<td style="padding-right: 12px; border: none;">
+0.57
+</td>
+<td style="padding-right: 12px; border: none;">
+0.58
+</td>
+<td style="padding-right: 12px; border: none;">
+0.61
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Num. obs.
+</td>
+<td style="padding-right: 12px; border: none;">
+62600
+</td>
+<td style="padding-right: 12px; border: none;">
+62600
+</td>
+<td style="padding-right: 12px; border: none;">
+62600
+</td>
+<td style="padding-right: 12px; border: none;">
+62600
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+RMSE
+</td>
+<td style="border-bottom: 2px solid black;">
+4.47
+</td>
+<td style="border-bottom: 2px solid black;">
+4.47
+</td>
+<td style="border-bottom: 2px solid black;">
+4.47
+</td>
+<td style="border-bottom: 2px solid black;">
+4.28
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="6">
+<span style="font-size:0.8em"><sup style="vertical-align: 0px;"><em><strong></sup>p &lt; 0.001, <sup style="vertical-align: 0px;"></strong></sup>p &lt; 0.01, <sup style="vertical-align: 0px;"></em></sup>p &lt; 0.05</span>
+</td>
+</tr>
+</table>
+<pre class="r"><code>htmlreg(
+  list(
+    model_china_1factor_10y_MSCIChina,
+    model_china_3factor_10y_MSCIChina,
+    model_china_4factor_10y_MSCIChina,
+    model_china_5factor_10y_MSCIChina 
+  ),
+  include.ci = FALSE, 
+  caption = &quot;Chinese Funds versus MSCI China&quot;,
+  doctype = FALSE,
+  caption.above = TRUE)</code></pre>
+<table cellspacing="0" align="center" style="border: none;">
+<caption align="top" style="margin-bottom:0.3em;">
+Chinese Funds versus MSCI China
+</caption>
+<tr>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b></b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 1</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 2</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 3</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 4</b>
+</th>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+(Intercept)
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.03
+</td>
+<td style="padding-right: 12px; border: none;">
+0.02
+</td>
+<td style="padding-right: 12px; border: none;">
+0.12<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.02
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+MSCIChinaNRUSD.RF
+</td>
+<td style="padding-right: 12px; border: none;">
+0.90<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.97<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.96<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.97<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+SMB
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.95<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.97<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.95<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+HML
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.15<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.10<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.12<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+WML
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.10<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+RMW
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.01
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+CMA
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.05<sup style="vertical-align: 0px;">*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="border-top: 1px solid black;">
+R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="border-top: 1px solid black;">
+0.59
+</td>
+<td style="border-top: 1px solid black;">
+0.62
+</td>
+<td style="border-top: 1px solid black;">
+0.62
+</td>
+<td style="border-top: 1px solid black;">
+0.62
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Adj. R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.59
+</td>
+<td style="padding-right: 12px; border: none;">
+0.62
+</td>
+<td style="padding-right: 12px; border: none;">
+0.62
+</td>
+<td style="padding-right: 12px; border: none;">
+0.62
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Num. obs.
+</td>
+<td style="padding-right: 12px; border: none;">
+62600
+</td>
+<td style="padding-right: 12px; border: none;">
+62600
+</td>
+<td style="padding-right: 12px; border: none;">
+62600
+</td>
+<td style="padding-right: 12px; border: none;">
+62600
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+RMSE
+</td>
+<td style="border-bottom: 2px solid black;">
+4.40
+</td>
+<td style="border-bottom: 2px solid black;">
+4.22
+</td>
+<td style="border-bottom: 2px solid black;">
+4.21
+</td>
+<td style="border-bottom: 2px solid black;">
+4.22
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="6">
+<span style="font-size:0.8em"><sup style="vertical-align: 0px;"><em><strong></sup>p &lt; 0.001, <sup style="vertical-align: 0px;"></strong></sup>p &lt; 0.01, <sup style="vertical-align: 0px;"></em></sup>p &lt; 0.05</span>
+</td>
+</tr>
+</table>
+<pre class="r"><code>htmlreg(
+  list(
+    model_china_1factor_10y_CSISOE,
+    model_china_3factor_10y_CSISOE,
+    model_china_4factor_10y_CSISOE,
+    model_china_5factor_10y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = &quot;Chinese Funds versus CSI Stateowned Enterprises Comp&quot;,
+  doctype = FALSE,
+  caption.above = TRUE)</code></pre>
+<table cellspacing="0" align="center" style="border: none;">
+<caption align="top" style="margin-bottom:0.3em;">
+Chinese Funds versus CSI Stateowned Enterprises Comp
+</caption>
+<tr>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b></b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 1</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 2</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 3</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 4</b>
+</th>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+(Intercept)
+</td>
+<td style="padding-right: 12px; border: none;">
+0.32<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.29<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.32<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.54<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+CSIStateownedEnterprisesCompPRCNY.RF
+</td>
+<td style="padding-right: 12px; border: none;">
+0.73<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.73<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.73<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.66<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+SMB
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.36<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.36<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.24<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+HML
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.10<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.11<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.23<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+WML
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.03<sup style="vertical-align: 0px;">**</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.01)
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+RMW
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.43<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+CMA
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-1.25<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="border-top: 1px solid black;">
+R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="border-top: 1px solid black;">
+0.57
+</td>
+<td style="border-top: 1px solid black;">
+0.57
+</td>
+<td style="border-top: 1px solid black;">
+0.57
+</td>
+<td style="border-top: 1px solid black;">
+0.61
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Adj. R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.57
+</td>
+<td style="padding-right: 12px; border: none;">
+0.57
+</td>
+<td style="padding-right: 12px; border: none;">
+0.57
+</td>
+<td style="padding-right: 12px; border: none;">
+0.61
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Num. obs.
+</td>
+<td style="padding-right: 12px; border: none;">
+62044
+</td>
+<td style="padding-right: 12px; border: none;">
+62044
+</td>
+<td style="padding-right: 12px; border: none;">
+62044
+</td>
+<td style="padding-right: 12px; border: none;">
+62044
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+RMSE
+</td>
+<td style="border-bottom: 2px solid black;">
+4.50
+</td>
+<td style="border-bottom: 2px solid black;">
+4.47
+</td>
+<td style="border-bottom: 2px solid black;">
+4.47
+</td>
+<td style="border-bottom: 2px solid black;">
+4.29
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="6">
+<span style="font-size:0.8em"><sup style="vertical-align: 0px;"><em><strong></sup>p &lt; 0.001, <sup style="vertical-align: 0px;"></strong></sup>p &lt; 0.01, <sup style="vertical-align: 0px;"></em></sup>p &lt; 0.05</span>
+</td>
+</tr>
+</table>
+<pre class="r"><code>?htmlreg
+
+#### Asia Pacific ex Japan Factor Models</code></pre>
 
 
 
