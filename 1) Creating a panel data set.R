@@ -130,14 +130,14 @@ Benchmarks_Factors <- Emerging_Factors %>%
     left_join(Benchmarks, by = "date1") %>% 
     filter(date1 > "2010-01-01")
 
+##### Pooled OLS MultiFactor Regressions 
 
-#### China Factor Models
+#### China 
 
 China_Panel <- China_Panel %>% 
   left_join(Benchmarks_Factors, by = "date1") 
 
-China_Panel <- rename(China_Panel, CSIStateownedEnterprisesCompPRCNY = `CSIState-ownedEnterprisesCompPRCNY`)
-  
+
 China_Panel <- China_Panel %>% 
   mutate(Funds.RF = MonthlyReturn - RF) %>% 
   mutate(MSCIChinaNRUSD.RF = MSCIChinaNRUSD - RF) %>% 
@@ -149,20 +149,60 @@ model_china_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = China_Pan
 model_china_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = China_Panel)
 model_china_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = China_Panel)
 
+model_china_1factor_5y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+model_china_3factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+model_china_4factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+model_china_5factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+
+model_china_1factor_3y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+model_china_3factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+model_china_4factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+model_china_5factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+
 model_china_1factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF, data = China_Panel)
 model_china_3factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML, data = China_Panel)
 model_china_4factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML, data = China_Panel)
 model_china_5factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + RMW + CMA, data = China_Panel)
+
+model_china_1factor_5y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+model_china_3factor_5y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+model_china_4factor_5y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+model_china_5factor_5y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+
+model_china_1factor_3y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+model_china_3factor_3y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+model_china_4factor_3y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+model_china_5factor_3y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
 
 model_china_1factor_10y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF, data = China_Panel)
 model_china_3factor_10y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML, data = China_Panel)
 model_china_4factor_10y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + WML, data = China_Panel)
 model_china_5factor_10y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + RMW + CMA, data = China_Panel)
 
+model_china_1factor_5y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+model_china_3factor_5y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+model_china_4factor_5y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + WML, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+model_china_5factor_5y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > as.Date("2015-01-01")))
+
+model_china_1factor_3y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF, data = subset(China_Panel, date1 > 2017-01-01))
+model_china_3factor_3y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML, data = subset(China_Panel, date1 > 2017-01-01))
+model_china_4factor_3y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + WML, data = subset(China_Panel, date1 > 2017-01-01))
+model_china_5factor_3y_MSCIChina <- lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > 2017-01-01))
+
 model_china_1factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = China_Panel)
 model_china_3factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = China_Panel)
 model_china_4factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = China_Panel)
 model_china_5factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = China_Panel)
+
+model_china_1factor_5y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = subset(China_Panel, date1 > 2015-01-01))
+model_china_3factor_5y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = subset(China_Panel, date1 > 2015-01-01))
+model_china_4factor_5y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(China_Panel, date1 > 2015-01-01))
+model_china_5factor_5y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > 2015-01-01))
+
+model_china_1factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+model_china_3factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+model_china_4factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
+model_china_5factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
 
 library(texreg)
 #+ results='asis'
@@ -174,7 +214,31 @@ htmlreg(
     model_china_5factor_10y_FF 
   ),
   include.ci = FALSE, 
-  caption = "Chinese Funds versus Fama French EM Benchmark",
+  caption = "Chinese Funds versus Fama French EM Benchmark 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_china_1factor_5y_FF,
+    model_china_3factor_5y_FF,
+    model_china_4factor_5y_FF,
+    model_china_5factor_5y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus Fama French EM Benchmark 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_china_1factor_3y_FF,
+    model_china_3factor_3y_FF,
+    model_china_4factor_3y_FF,
+    model_china_5factor_3y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus Fama French EM Benchmark 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -187,7 +251,33 @@ htmlreg(
     model_china_5factor_10y_CSI300 
   ),
   include.ci = FALSE, 
-  caption = "Chinese Funds versus CSI 300",
+  caption = "Chinese Funds versus CSI 300, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_5y_CSI300,
+    model_china_3factor_5y_CSI300,
+    model_china_4factor_5y_CSI300,
+    model_china_5factor_5y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI 300, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_3y_CSI300,
+    model_china_3factor_3y_CSI300,
+    model_china_4factor_3y_CSI300,
+    model_china_5factor_3y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI 300, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -200,7 +290,33 @@ htmlreg(
     model_china_5factor_10y_MSCIChina 
   ),
   include.ci = FALSE, 
-  caption = "Chinese Funds versus MSCI China",
+  caption = "Chinese Funds versus MSCI China, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_5y_MSCIChina,
+    model_china_3factor_5y_MSCIChina,
+    model_china_4factor_5y_MSCIChina,
+    model_china_5factor_5y_MSCIChina 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus MSCI China, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_3y_MSCIChina,
+    model_china_3factor_3y_MSCIChina,
+    model_china_4factor_3y_MSCIChina,
+    model_china_5factor_3y_MSCIChina 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus MSCI China, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -213,17 +329,40 @@ htmlreg(
     model_china_5factor_10y_CSISOE 
   ),
   include.ci = FALSE, 
-  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp",
+  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp, 2010-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_10y_CSISOE,
+    model_china_3factor_10y_CSISOE,
+    model_china_4factor_10y_CSISOE,
+    model_china_5factor_10y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_3y_CSISOE,
+    model_china_3factor_3y_CSISOE,
+    model_china_4factor_3y_CSISOE,
+    model_china_5factor_3y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
 
 #### Asia Pacific ex Japan Factor Models
 
 AsiaPacific_Panel <- AsiaPacific_Panel %>% 
   left_join(Benchmarks_Factors, by = "date1") 
-
-AsiaPacific_Panel <- rename(AsiaPacific_Panel, CSIStateownedEnterprisesCompPRCNY = `CSIState-ownedEnterprisesCompPRCNY`)
 
 
 AsiaPacific_Panel <- AsiaPacific_Panel %>% 
@@ -237,20 +376,60 @@ model_asiapacexjpn_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = As
 model_asiapacexjpn_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = AsiaPacific_Panel)
 model_asiapacexjpn_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Panel)
 
+model_asiapacexjpn_1factor_5y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_3factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_4factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_5factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data =subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+w
+model_asiapacexjpn_1factor_3y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_3factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_4factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_5factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+
 model_asiapacexjpn_1factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF, data = AsiaPacific_Panel)
 model_asiapacexjpn_3factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML, data = AsiaPacific_Panel)
 model_asiapacexjpn_4factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML, data = AsiaPacific_Panel)
 model_asiapacexjpn_5factor_10y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Panel)
+
+model_asiapacexjpn_1factor_5y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_3factor_5y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_4factor_5y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_5factor_5y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+
+model_asiapacexjpn_1factor_3y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_3factor_3y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_4factor_3y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_5factor_3y_CSI300 <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
 
 model_asiapacexjpn_1factor_10y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF, data = AsiaPacific_Panel)
 model_asiapacexjpn_3factor_10y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML, data = AsiaPacific_Panel)
 model_asiapacexjpn_4factor_10y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + WML, data = AsiaPacific_Panel)
 model_asiapacexjpn_5factor_10y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Panel)
 
+model_asiapacexjpn_1factor_5y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_3factor_5y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_4factor_5y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_5factor_5y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+
+model_asiapacexjpn_1factor_3y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_3factor_3y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_4factor_3y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_5factor_3y_MSCIAsiaPacExJpn <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+
 model_asiapacexjpn_1factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = AsiaPacific_Panel)
 model_asiapacexjpn_3factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = AsiaPacific_Panel)
 model_asiapacexjpn_4factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = AsiaPacific_Panel)
 model_asiapacexjpn_5factor_10y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Panel)
+
+model_asiapacexjpn_1factor_5y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_3factor_5y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_4factor_5y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+model_asiapacexjpn_5factor_5y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
+
+model_asiapacexjpn_1factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_3factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_4factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
+model_asiapacexjpn_5factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
 
 library(texreg)
 #+ results='asis'
@@ -262,7 +441,31 @@ htmlreg(
     model_asiapacexjpn_5factor_10y_FF 
   ),
   include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark",
+  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_5y_FF,
+    model_asiapacexjpn_3factor_5y_FF,
+    model_asiapacexjpn_4factor_5y_FF,
+    model_asiapacexjpn_5factor_5y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_3y_FF,
+    model_asiapacexjpn_3factor_3y_FF,
+    model_asiapacexjpn_4factor_3y_FF,
+    model_asiapacexjpn_5factor_3y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -275,7 +478,31 @@ htmlreg(
     model_asiapacexjpn_5factor_10y_CSI300 
   ),
   include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus CSI 300",
+  caption = "Asian Pacfic ex Japan versus CSI 300, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_5y_CSI300,
+    model_asiapacexjpn_3factor_5y_CSI300,
+    model_asiapacexjpn_4factor_5y_CSI300,
+    model_asiapacexjpn_5factor_5y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus CSI 300, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_3y_CSI300,
+    model_asiapacexjpn_3factor_3y_CSI300,
+    model_asiapacexjpn_4factor_3y_CSI300,
+    model_asiapacexjpn_5factor_3y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus CSI 300, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -288,7 +515,31 @@ htmlreg(
     model_asiapacexjpn_5factor_10y_MSCIAsiaPacExJpn 
   ),
   include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan",
+  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_5y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_3factor_5y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_4factor_5y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_5factor_5y_MSCIAsiaPacExJpn 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_3y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_3factor_3y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_4factor_3y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_5factor_3y_MSCIAsiaPacExJpn 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -301,7 +552,31 @@ htmlreg(
     model_asiapacexjpn_5factor_10y_CSISOE 
   ),
   include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp",
+  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_5y_CSISOE,
+    model_asiapacexjpn_3factor_5y_CSISOE,
+    model_asiapacexjpn_4factor_5y_CSISOE,
+    model_asiapacexjpn_5factor_5y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_3y_CSISOE,
+    model_asiapacexjpn_3factor_3y_CSISOE,
+    model_asiapacexjpn_4factor_3y_CSISOE,
+    model_asiapacexjpn_5factor_3y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -309,4 +584,167 @@ htmlreg(
 
 India_Panel <- India_Panel %>% 
   left_join(Benchmarks_Factors, by = "date1") 
+
+India_Panel <- India_Panel %>% 
+  mutate(Funds.RF = MonthlyReturn - RF) %>% 
+  mutate(IISLNifty50TRINR.RF = IISLNifty50TRINR - RF) %>% 
+  mutate(MSCIIndiaNRUSD.RF = MSCIIndiaNRUSD - RF) %>% 
+  mutate(SPBSE500IndiaTRINR.RF = SPBSE500IndiaTRINR - RF)
+
+model_india_1factor_10y_FF <- lm(Funds.RF ~ Mkt.RF, data = India_Panel)
+model_india_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = India_Panel)
+model_india_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = India_Panel)
+model_india_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = India_Panel)
+
+model_india_1factor_10y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF, data = India_Panel)
+model_india_3factor_10y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML, data = India_Panel)
+model_india_4factor_10y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML + WML, data = India_Panel)
+model_india_5factor_10y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML + RMW + CMA, data = India_Panel)
+
+model_india_1factor_10y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF, data = India_Panel)
+model_india_3factor_10y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML, data = India_Panel)
+model_india_4factor_10y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML + WML, data = India_Panel)
+model_india_5factor_10y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML + RMW + CMA, data = India_Panel)
+
+model_india_1factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF, data = India_Panel)
+model_india_3factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML, data = India_Panel)
+model_india_4factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + WML, data = India_Panel)
+model_india_5factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = India_Panel)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_10y_FF,
+    model_india_3factor_10y_FF,
+    model_india_4factor_10y_FF,
+    model_india_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Fama French EM Benchmark",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_10y_IISLNifty50,
+    model_india_3factor_10y_IISLNifty50,
+    model_india_4factor_10y_IISLNifty50,
+    model_india_5factor_10y_IISLNifty50
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Nifty 50",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_10y_MSCIIndia,
+    model_india_3factor_10y_MSCIIndia,
+    model_india_4factor_10y_MSCIIndia,
+    model_india_5factor_10y_MSCIIndia
+  ),
+  include.ci = FALSE, 
+  caption = "India versus MSCI India",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_10y_SPBSE500India,
+    model_india_3factor_10y_SPBSE500India,
+    model_india_4factor_10y_SPBSE500India,
+    model_india_5factor_10y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "India versus S&P BSE 500 India",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#### Asia Emerging Markets
+
+AsiaEmerg_Panel <- AsiaEmerg_Panel %>% 
+  left_join(Benchmarks_Factors, by = "date1") 
+
+AsiaEmerg_Panel <- AsiaEmerg_Panel %>% 
+  mutate(Funds.RF = MonthlyReturn - RF) %>% 
+  mutate(MSCIEMAsia1040NRUSD.RF = MSCIEMAsia1040NRUSD - RF) %>% 
+  mutate(MSCIEMAsiaNRUSD.RF = MSCIEMAsiaNRUSD - RF) %>% 
+  mutate(CSIStateownedEnterprisesCompPRCNY.RF = CSIStateownedEnterprisesCompPRCNY - RF)
+  
+model_asiaemerg_1factor_10y_FF <- lm(Funds.RF ~ Mkt.RF, data = AsiaEmerg_Panel)
+model_asiaemerg_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = AsiaEmerg_Panel)
+model_asiaemerg_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = AsiaEmerg_Panel)
+model_asiaemerg_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = AsiaEmerg_Panel)
+
+model_asiaemerg_1factor_10y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF, data = AsiaEmerg_Panel)
+model_asiaemerg_3factor_10y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML, data = AsiaEmerg_Panel)
+model_asiaemerg_4factor_10y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML + WML, data = AsiaEmerg_Panel)
+model_asiaemerg_5factor_10y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML + RMW + CMA, data = AsiaEmerg_Panel)
+
+model_asiaemerg_1factor_10y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF, data = AsiaEmerg_Panel)
+model_asiaemerg_3factor_10y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML, data = AsiaEmerg_Panel)
+model_asiaemerg_4factor_10y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML + WML, data = AsiaEmerg_Panel)
+model_asiaemerg_5factor_10y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML + RMW + CMA, data = AsiaEmerg_Panel)
+
+model_asiaemerg_1factor_10y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = AsiaEmerg_Panel)
+model_asiaemerg_3factor_10y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = AsiaEmerg_Panel)
+model_asiaemerg_4factor_10y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = AsiaEmerg_Panel)
+model_asiaemerg_5factor_10y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = AsiaEmerg_Panel)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_10y_FF,
+    model_asiaemerg_3factor_10y_FF,
+    model_asiaemerg_4factor_10y_FF,
+    model_asiaemerg_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus Fama French EM Benchmark",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_10y_MSCIEMAsia1040,
+    model_asiaemerg_3factor_10y_MSCIEMAsia1040,
+    model_asiaemerg_4factor_10y_MSCIEMAsia1040,
+    model_asiaemerg_5factor_10y_MSCIEMAsia1040
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_10y_MSCIEMAsia,
+    model_asiaemerg_3factor_10y_MSCIEMAsia,
+    model_asiaemerg_4factor_10y_MSCIEMAsia,
+    model_asiaemerg_5factor_10y_MSCIEMAsia
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_10y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_3factor_10y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_4factor_10y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_5factor_10y_CSIStateownedEnterprisesComp
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus CSI Stateownen Enterprises Comp",
+  doctype = FALSE,
+  caption.above = TRUE)
 
