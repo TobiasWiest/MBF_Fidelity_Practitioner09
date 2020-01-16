@@ -1,12 +1,12 @@
 library(tidyr)
 library(dplyr)
 library(readxl)
-library(tidyverse)
+
+
 Full_Equity_Sample <- read_excel("Full Equity Sample.xlsx")
 colnames(Full_Equity_Sample)
 
-Full_Equity_Sample <- Full_Equity_Sample %>% 
-  mutate(FundID = row_number())
+Full_Equity_Sample <- tibble::rowid_to_column(Full_Equity_Sample, "FundID")
 
 Full_Equity_Static  <- Full_Equity_Sample %>% 
   select(-c(grep("Fund Size", names(Full_Equity_Sample)),
@@ -1033,3 +1033,34 @@ htmlreg(
   caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
+
+##### One Regression per fund
+
+library(lme4)
+library(plyr)
+
+#Only keep funds with at lest 24 observations
+China_Panel_Ind <- China_Panel[as.numeric(ave(China_Panel$FundID, China_Panel$FundID, FUN=length)) >= 24, ]
+AsiaPacific_Panel_Ind <- AsiaPacific_Panel[as.numeric(ave(AsiaPacific_Panel$FundID, AsiaPacific_Panel$FundID, FUN=length)) >= 24, ]
+India_Panel_Ind <- India_Panel[as.numeric(ave(India_Panel$FundID, India_Panel$FundID, FUN=length)) >= 24, ]
+AsiaEmerg_Panel_Ind <- AsiaEmerg_Panel[as.numeric(ave(AsiaEmerg_Panel$FundID, AsiaEmerg_Panel$FundID, FUN=length)) >= 24, ]
+
+
+library(broom)
+
+China_Panel_Ind <- China_Panel_Ind %>% 
+  arrange(FundID, date1)
+
+China_Panel_Ind %>% 
+  select("Funds.Rf", "Mkt.Rf")
+
+China_Panel_Ind$Funds.Rf
+
+China_Panel_Ind_1factor <- China_Panel_Ind %>% 
+  group_by(FundID) %>%
+  do(model_china_1factor_10y_FF_ind = lm(Funds.RF ~ Mkt.RF, data = .))
+
+# get the coefficients by group in a tidy data_frame
+dfHourCoef <- tidy(dfHour, fitHour)
+dfHourCoef
+
