@@ -380,7 +380,7 @@ model_asiapacexjpn_1factor_5y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(AsiaPaci
 model_asiapacexjpn_3factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
 model_asiapacexjpn_4factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
 model_asiapacexjpn_5factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data =subset(AsiaPacific_Panel, date1 > as.Date("2015-01-01")))
-w
+
 model_asiapacexjpn_1factor_3y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
 model_asiapacexjpn_3factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
 model_asiapacexjpn_4factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
@@ -596,20 +596,60 @@ model_india_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = India_Pan
 model_india_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = India_Panel)
 model_india_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = India_Panel)
 
+model_india_1factor_5y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_3factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_4factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_5factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+
+model_india_1factor_3y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_3factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_4factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_5factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+
 model_india_1factor_10y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF, data = India_Panel)
 model_india_3factor_10y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML, data = India_Panel)
 model_india_4factor_10y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML + WML, data = India_Panel)
 model_india_5factor_10y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML + RMW + CMA, data = India_Panel)
+
+model_india_1factor_5y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_3factor_5y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_4factor_5y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML + WML, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_5factor_5y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML + RMW + CMA, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+
+model_india_1factor_3y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_3factor_3y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_4factor_3y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML + WML, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_5factor_3y_IISLNifty50 <- lm(Funds.RF ~ IISLNifty50TRINR.RF + SMB + HML + RMW + CMA, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
 
 model_india_1factor_10y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF, data = India_Panel)
 model_india_3factor_10y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML, data = India_Panel)
 model_india_4factor_10y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML + WML, data = India_Panel)
 model_india_5factor_10y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML + RMW + CMA, data = India_Panel)
 
+model_india_1factor_5y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_3factor_5y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_4factor_5y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML + WML, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_5factor_5y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML + RMW + CMA, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+
+model_india_1factor_3y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_3factor_3y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_4factor_3y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML + WML, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_5factor_3y_MSCIIndia <- lm(Funds.RF ~ MSCIIndiaNRUSD.RF + SMB + HML + RMW + CMA, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+
 model_india_1factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF, data = India_Panel)
 model_india_3factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML, data = India_Panel)
 model_india_4factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + WML, data = India_Panel)
 model_india_5factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = India_Panel)
+
+model_india_1factor_5y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_3factor_5y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_4factor_5y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + WML, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+model_india_5factor_5y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = subset(India_Panel, date1 > as.Date("2015-01-01")))
+
+model_india_1factor_3y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_3factor_3y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_4factor_3y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + WML, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
+model_india_5factor_3y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
 
 #+ results='asis'
 htmlreg(
@@ -620,7 +660,33 @@ htmlreg(
     model_india_5factor_10y_FF
   ),
   include.ci = FALSE, 
-  caption = "India versus Fama French EM Benchmark",
+  caption = "India versus Fama French EM Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_5y_FF,
+    model_india_3factor_5y_FF,
+    model_india_4factor_5y_FF,
+    model_india_5factor_5y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Fama French EM Benchmark, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_3y_FF,
+    model_india_3factor_3y_FF,
+    model_india_4factor_3y_FF,
+    model_india_5factor_3y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Fama French EM Benchmark, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -633,10 +699,35 @@ htmlreg(
     model_india_5factor_10y_IISLNifty50
   ),
   include.ci = FALSE, 
-  caption = "India versus Nifty 50",
+  caption = "India versus Nifty 50, 2010-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_5y_IISLNifty50,
+    model_india_3factor_5y_IISLNifty50,
+    model_india_4factor_5y_IISLNifty50,
+    model_india_5factor_5y_IISLNifty50
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Nifty 50, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_3y_IISLNifty50,
+    model_india_3factor_3y_IISLNifty50,
+    model_india_4factor_3y_IISLNifty50,
+    model_india_5factor_3y_IISLNifty50
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Nifty 50, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
 
 #+ results='asis'
 htmlreg(
@@ -647,7 +738,33 @@ htmlreg(
     model_india_5factor_10y_MSCIIndia
   ),
   include.ci = FALSE, 
-  caption = "India versus MSCI India",
+  caption = "India versus MSCI India, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_5y_MSCIIndia,
+    model_india_3factor_5y_MSCIIndia,
+    model_india_4factor_5y_MSCIIndia,
+    model_india_5factor_5y_MSCIIndia
+  ),
+  include.ci = FALSE, 
+  caption = "India versus MSCI India, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_3y_MSCIIndia,
+    model_india_3factor_3y_MSCIIndia,
+    model_india_4factor_3y_MSCIIndia,
+    model_india_5factor_3y_MSCIIndia
+  ),
+  include.ci = FALSE, 
+  caption = "India versus MSCI India, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -660,7 +777,33 @@ htmlreg(
     model_india_5factor_10y_SPBSE500India
   ),
   include.ci = FALSE, 
-  caption = "India versus S&P BSE 500 India",
+  caption = "India versus S&P BSE 500 India, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_5y_SPBSE500India,
+    model_india_3factor_5y_SPBSE500India,
+    model_india_4factor_5y_SPBSE500India,
+    model_india_5factor_5y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "India versus S&P BSE 500 India, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_3y_SPBSE500India,
+    model_india_3factor_3y_SPBSE500India,
+    model_india_4factor_3y_SPBSE500India,
+    model_india_5factor_3y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "India versus S&P BSE 500 India, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -680,20 +823,60 @@ model_asiaemerg_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = AsiaE
 model_asiaemerg_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = AsiaEmerg_Panel)
 model_asiaemerg_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = AsiaEmerg_Panel)
 
+model_asiaemerg_1factor_5y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_3factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_4factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_5factor_5y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+
+model_asiaemerg_1factor_3y_FF <- lm(Funds.RF ~ Mkt.RF, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_3factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_4factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_5factor_3y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+
 model_asiaemerg_1factor_10y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF, data = AsiaEmerg_Panel)
 model_asiaemerg_3factor_10y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML, data = AsiaEmerg_Panel)
 model_asiaemerg_4factor_10y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML + WML, data = AsiaEmerg_Panel)
 model_asiaemerg_5factor_10y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML + RMW + CMA, data = AsiaEmerg_Panel)
+
+model_asiaemerg_1factor_5y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_3factor_5y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_4factor_5y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML + WML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_5factor_5y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML + RMW + CMA, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+
+model_asiaemerg_1factor_3y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_3factor_3y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_4factor_3y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML + WML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_5factor_3y_MSCIEMAsia1040 <- lm(Funds.RF ~ MSCIEMAsia1040NRUSD.RF + SMB + HML + RMW + CMA, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
 
 model_asiaemerg_1factor_10y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF, data = AsiaEmerg_Panel)
 model_asiaemerg_3factor_10y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML, data = AsiaEmerg_Panel)
 model_asiaemerg_4factor_10y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML + WML, data = AsiaEmerg_Panel)
 model_asiaemerg_5factor_10y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML + RMW + CMA, data = AsiaEmerg_Panel)
 
+model_asiaemerg_1factor_5y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_3factor_5y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_4factor_5y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML + WML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_5factor_5y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML + RMW + CMA, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+
+model_asiaemerg_1factor_3y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_3factor_3y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_4factor_3y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML + WML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_5factor_3y_MSCIEMAsia <- lm(Funds.RF ~ MSCIEMAsiaNRUSD.RF + SMB + HML + RMW + CMA, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+
 model_asiaemerg_1factor_10y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = AsiaEmerg_Panel)
 model_asiaemerg_3factor_10y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = AsiaEmerg_Panel)
 model_asiaemerg_4factor_10y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = AsiaEmerg_Panel)
 model_asiaemerg_5factor_10y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = AsiaEmerg_Panel)
+
+model_asiaemerg_1factor_5y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_3factor_5y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_4factor_5y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+model_asiaemerg_5factor_5y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(AsiaEmerg_Panel, date1 > as.Date("2015-01-01")))
+
+model_asiaemerg_1factor_3y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_3factor_3y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data =subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_4factor_3y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
+model_asiaemerg_5factor_3y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
 
 #+ results='asis'
 htmlreg(
@@ -704,7 +887,33 @@ htmlreg(
     model_asiaemerg_5factor_10y_FF
   ),
   include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus Fama French EM Benchmark",
+  caption = "Emerging Markets in Asia versus Fama French EM Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_5y_FF,
+    model_asiaemerg_3factor_5y_FF,
+    model_asiaemerg_4factor_5y_FF,
+    model_asiaemerg_5factor_5y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus Fama French EM Benchmark, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_3y_FF,
+    model_asiaemerg_3factor_3y_FF,
+    model_asiaemerg_4factor_3y_FF,
+    model_asiaemerg_5factor_3y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus Fama French EM Benchmark, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -717,7 +926,33 @@ htmlreg(
     model_asiaemerg_5factor_10y_MSCIEMAsia1040
   ),
   include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040",
+  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_5y_MSCIEMAsia1040,
+    model_asiaemerg_3factor_5y_MSCIEMAsia1040,
+    model_asiaemerg_4factor_5y_MSCIEMAsia1040,
+    model_asiaemerg_5factor_5y_MSCIEMAsia1040
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_3y_MSCIEMAsia1040,
+    model_asiaemerg_3factor_3y_MSCIEMAsia1040,
+    model_asiaemerg_4factor_3y_MSCIEMAsia1040,
+    model_asiaemerg_5factor_3y_MSCIEMAsia1040
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040, 2017-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
@@ -730,10 +965,35 @@ htmlreg(
     model_asiaemerg_5factor_10y_MSCIEMAsia
   ),
   include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus MSCI Asia EM",
+  caption = "Emerging Markets in Asia versus MSCI Asia EM, 2010-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_5y_MSCIEMAsia,
+    model_asiaemerg_3factor_5y_MSCIEMAsia,
+    model_asiaemerg_4factor_5y_MSCIEMAsia,
+    model_asiaemerg_5factor_5y_MSCIEMAsia
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_3y_MSCIEMAsia,
+    model_asiaemerg_3factor_3y_MSCIEMAsia,
+    model_asiaemerg_4factor_3y_MSCIEMAsia,
+    model_asiaemerg_5factor_3y_MSCIEMAsia
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
 
 #+ results='asis'
 htmlreg(
@@ -744,7 +1004,32 @@ htmlreg(
     model_asiaemerg_5factor_10y_CSIStateownedEnterprisesComp
   ),
   include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus CSI Stateownen Enterprises Comp",
+  caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2010-2019",
   doctype = FALSE,
   caption.above = TRUE)
 
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_5y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_3factor_5y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_4factor_5y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_5factor_5y_CSIStateownedEnterprisesComp
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_3y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_3factor_3y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_4factor_3y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_5factor_3y_CSIStateownedEnterprisesComp
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
