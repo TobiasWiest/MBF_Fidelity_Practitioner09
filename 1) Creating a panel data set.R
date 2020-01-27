@@ -6,7 +6,7 @@ library(readxl)
 Full_Equity_Sample <- read_excel("Full Equity Sample.xlsx")
 colnames(Full_Equity_Sample)
 
-Full_Equity_Sample <- tibble::rowid_to_column(Full_Equity_Sample, "FundID")
+Full_Equity_Sample$FundID <- seq.int(nrow(Full_Equity_Sample))
 
 Full_Equity_Static  <- Full_Equity_Sample %>% 
   select(-c(grep("Fund Size", names(Full_Equity_Sample)),
@@ -64,8 +64,9 @@ Full_Equity_Panel <- Full_Equity_Dynamic %>%
               arrange(FundID, date) %>% 
                 filter(!
                 (is.na(FundSize) == 1 &
-                is.na(MonthlyReturn) == 1 &
-                is.na(EquityStyle) == 1 ))
+                is.na(EquityStyle) == 1 |
+                is.na(MonthlyReturn) == 1 
+                ))
 
              
 Full_Equity_Panel <- Full_Equity_Panel %>%
@@ -118,8 +119,25 @@ Emerging_Factors <- Emerging_5Factors %>%
 
 Emerging_Factors <- Emerging_Factors %>% 
   mutate(date1 = paste(substring(as.character(Date), 1, 4), substring(as.character(Date),5,6), "28", sep = "-")) %>% 
+  mutate(date1 = as.Date(date1)) %>% 
+  filter(date1 > "2010-01-01")
+
+ReturnUSD <- read_excel("ReturnUSD.xlsx")
+
+ReturnUSD <- ReturnUSD %>% 
   mutate(date1 = as.Date(date1))
 
+Emerging_Factors <- Emerging_Factors %>% 
+  left_join(ReturnUSD, by = "date1") 
+
+
+Emerging_Factors <- Emerging_Factors %>% 
+  mutate(Mkt.RF = ((((Mkt.RF/100)+1)/((ReturnUSD/100)+1))-1)*100) %>% 
+  mutate(SMB = ((((SMB/100)+1)/((ReturnUSD/100)+1)-1))*100) %>% 
+  mutate(HML = ((((HML/100)+1)/((ReturnUSD/100)+1)-1))*100) %>% 
+  mutate(CMA = ((((CMA/100)+1)/((ReturnUSD/100)+1)-1))*100) %>% 
+  mutate(RF = ((((RF/100)+1)/((ReturnUSD/100)+1)-1))*100) %>% 
+  mutate(WML = ((((WML/100)+1)/((ReturnUSD/100)+1)-1))*100) 
 
 # Benchmark Returns from Morningstar
 Benchmarks <- read_excel("Benchmark Returns.xlsx")
@@ -127,8 +145,7 @@ Benchmarks <- Benchmarks %>%
   mutate(date1 = as.Date(Date))
 
 Benchmarks_Factors <- Emerging_Factors %>% 
-    left_join(Benchmarks, by = "date1") %>% 
-    filter(date1 > "2010-01-01")
+    left_join(Benchmarks, by = "date1") 
 
 ##### Pooled OLS MultiFactor Regressions 
 
@@ -589,7 +606,7 @@ India_Panel <- India_Panel %>%
   mutate(Funds.RF = MonthlyReturn - RF) %>% 
   mutate(IISLNifty50TRINR.RF = IISLNifty50TRINR - RF) %>% 
   mutate(MSCIIndiaNRUSD.RF = MSCIIndiaNRUSD - RF) %>% 
-  mutate(SPBSE500IndiaTRINR.RF = SPBSE500IndiaTRINR - RF)
+  mutate(SPBSE500IndiaTRINR.RF = SPBSE500IndiaTRINR...40 - RF)
 
 model_india_1factor_10y_FF <- lm(Funds.RF ~ Mkt.RF, data = India_Panel)
 model_india_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = India_Panel)
@@ -1046,21 +1063,23 @@ India_Panel_Ind <- India_Panel[as.numeric(ave(India_Panel$FundID, India_Panel$Fu
 AsiaEmerg_Panel_Ind <- AsiaEmerg_Panel[as.numeric(ave(AsiaEmerg_Panel$FundID, AsiaEmerg_Panel$FundID, FUN=length)) >= 24, ]
 
 
+
 library(broom)
+library(tidyverse)
 
-China_Panel_Ind <- China_Panel_Ind %>% 
-  arrange(FundID, date1)
 
-China_Panel_Ind %>% 
-  select("Funds.Rf", "Mkt.Rf")
-
-China_Panel_Ind$Funds.Rf
-
-China_Panel_Ind_1factor <- China_Panel_Ind %>% 
+China_Panel_Ind_10y_FF <- China_Panel_Ind %>% 
   group_by(FundID) %>%
-  do(model_china_1factor_10y_FF_ind = lm(Funds.RF ~ Mkt.RF, data = .))
+  do(formula_FF = lm(Funds.RF ~ Mkt.RF , data = .))
 
-# get the coefficients by group in a tidy data_frame
-dfHourCoef <- tidy(dfHour, fitHour)
-dfHourCoef
+fund_alphas_china_10y_FF <- tidy(China_Panel_Ind_10y_FF, formula_FF) %>% 
+      filter(term == "(Intercept)")
+
+fund_alphas_china_10y_FF %>% 
+  ggplot(aes(estimate)) +
+      geom_freqpoly(bins = 50)
+
+sum(fund_alphas_china_10y_FF$estimate > 0 & fund_alphas_china_10y_FF$p.value < 0.05)
+sum(fund_alphas_china_10y_FF$estimate < 0 & fund_alphas_china_10y_FF$p.value < 0.05)
+sum(fund_alphas_china_10y_FF$p.value >= 0.05)
 
