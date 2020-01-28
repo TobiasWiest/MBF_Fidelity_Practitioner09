@@ -1,7 +1,10 @@
-library(tidyr)
+library(tidyverse)
 library(dplyr)
 library(readxl)
-
+library(reshape2)
+library(texreg)
+library(lme4)
+library(broom)
 
 Full_Equity_Sample <- read_excel("Full Equity Sample.xlsx")
 
@@ -25,7 +28,6 @@ MonthlyReturnWide <- Full_Equity_Sample %>%
   select(FundID,
          grep("Monthly Return", names(Full_Equity_Sample)))
 
-library(reshape2)
 
 FundSizeLong <- melt(FundSizeWide,
                   id.vars="FundID",
@@ -92,9 +94,36 @@ AsiaEmerg_Panel <- Full_Equity_Panel %>%
   filter(`Investment Area`  == "Asia Emerging Mkts") %>% 
   arrange(year, month)
 
-Large_Panel <- Full_Equity_Panel[grepl("Large", Full_Equity_Panel$EquityStyle),]
 Mid_Panel <- Full_Equity_Panel[grepl("Mid", Full_Equity_Panel$EquityStyle),]
 Small_Panel <- Full_Equity_Panel[grepl("Small", Full_Equity_Panel$EquityStyle),]
+
+
+Small_Panel %>% 
+  filter(month == 12) %>% 
+  group_by(date1, `Investment Area`) %>% 
+  count() %>% 
+  ggplot(aes(x= date1, y= n, color= `Investment Area`)) + 
+  geom_line(size=1) 
+
+Mid_Panel %>% 
+  filter(month == 12) %>% 
+  group_by(date1, `Investment Area`) %>% 
+  count() %>% 
+  ggplot(aes(x= date1, y= n, color= `Investment Area`)) + 
+  geom_line(size=1) 
+
+China_Mid_Panel <- China_Panel[grepl("Mid", Full_Equity_Panel$EquityStyle),]
+China_Small_Panel <- China_Panel[grepl("Small", Full_Equity_Panel$EquityStyle),]
+
+India_Mid_Panel <- India_Panel[grepl("Mid", Full_Equity_Panel$EquityStyle),]
+India_Small_Panel <- India_Panel[grepl("Small", Full_Equity_Panel$EquityStyle),]
+
+AsiaEmerg_Mid_Panel <- AsiaEmerg_Panel[grepl("Mid", Full_Equity_Panel$EquityStyle),]
+AsiaEmerg_Small_Panel <- AsiaEmerg_Panel[grepl("Small", Full_Equity_Panel$EquityStyle),]
+
+AsiaPacific_Mid_Panel <- AsiaPacific_Panel[grepl("Mid", Full_Equity_Panel$EquityStyle),]
+AsiaPacific_Small_Panel <- AsiaPacific_Panel[grepl("Small", Full_Equity_Panel$EquityStyle),]
+
 
 # Factors Emerging Markets from Fama French Website
 Emerging_5Factors <- read.csv("Emerging_5_Factors.csv") 
@@ -206,7 +235,6 @@ model_china_3factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY
 model_china_4factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
 model_china_5factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
 
-library(texreg)
 #+ results='asis'
 htmlreg(
   list(
@@ -433,7 +461,7 @@ model_asiapacexjpn_3factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCo
 model_asiapacexjpn_4factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
 model_asiapacexjpn_5factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
 
-library(texreg)
+
 #+ results='asis'
 htmlreg(
   list(
@@ -1036,37 +1064,423 @@ htmlreg(
   doctype = FALSE,
   caption.above = TRUE)
 
+##### Regressions for Cap-Style Categorization
+
+#' India Mid Cap
+
+India_Mid_Panel <- India_Mid_Panel %>% 
+  left_join(Benchmarks_Factors, by = "date1") 
+
+India_Mid_Panel <- India_Mid_Panel %>% 
+  mutate(Funds.RF = MonthlyReturn - RF) %>% 
+  mutate(MSCIIndiaMidNRUSD.RF = MSCIIndiaMidNRUSD - RF) %>% 
+  mutate(IISLNiftyMidcap150TRINR.RF = IISLNiftyMidcap150TRINR - RF) %>% 
+  mutate(SPBSE500IndiaTRINR.RF = SPBSE500IndiaTRINR...40 - RF)
+
+
+model_india_mid_1factor_10y_FF <- lm(Funds.RF ~ Mkt.RF, data = India_Mid_Panel)
+model_india_mid_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = India_Mid_Panel)
+model_india_mid_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = India_Mid_Panel)
+model_india_mid_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = India_Mid_Panel)
+
+model_india_mid_1factor_10y_MSCIIndiaMid <- lm(Funds.RF ~ MSCIIndiaMidNRUSD.RF, data = India_Mid_Panel)
+model_india_mid_3factor_10y_MSCIIndiaMid <- lm(Funds.RF ~ MSCIIndiaMidNRUSD.RF + SMB + HML, data = India_Mid_Panel)
+model_india_mid_4factor_10y_MSCIIndiaMid <- lm(Funds.RF ~ MSCIIndiaMidNRUSD.RF + SMB + HML + WML, data = India_Mid_Panel)
+model_india_mid_5factor_10y_MSCIIndiaMid <- lm(Funds.RF ~ MSCIIndiaMidNRUSD.RF + SMB + HML + RMW + CMA, data = India_Mid_Panel)
+
+model_india_mid_1factor_10y_IISLNiftyMidcap150 <- lm(Funds.RF ~ IISLNiftyMidcap150TRINR.RF, data = India_Mid_Panel)
+model_india_mid_3factor_10y_IISLNiftyMidcap150 <- lm(Funds.RF ~ IISLNiftyMidcap150TRINR.RF + SMB + HML, data = India_Mid_Panel)
+model_india_mid_4factor_10y_IISLNiftyMidcap150 <- lm(Funds.RF ~ IISLNiftyMidcap150TRINR.RF + SMB + HML + WML, data = India_Mid_Panel)
+model_india_mid_5factor_10y_IISLNiftyMidcap150 <- lm(Funds.RF ~ IISLNiftyMidcap150TRINR.RF + SMB + HML + RMW + CMA, data = India_Mid_Panel)
+
+model_india_mid_1factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF, data = India_Mid_Panel)
+model_india_mid_3factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML, data = India_Mid_Panel)
+model_india_mid_4factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + WML, data = India_Mid_Panel)
+model_india_mid_5factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = India_Mid_Panel)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_mid_1factor_10y_FF,
+    model_india_mid_3factor_10y_FF,
+    model_india_mid_4factor_10y_FF,
+    model_india_mid_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Mid Cap Funds versus Fama French Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_mid_1factor_10y_MSCIIndiaMid,
+    model_india_mid_3factor_10y_MSCIIndiaMid,
+    model_india_mid_4factor_10y_MSCIIndiaMid,
+    model_india_mid_5factor_10y_MSCIIndiaMid
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Mid Cap Funds versus MSCI India Mid Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_mid_1factor_10y_IISLNiftyMidcap150,
+    model_india_mid_3factor_10y_IISLNiftyMidcap150,
+    model_india_mid_4factor_10y_IISLNiftyMidcap150,
+    model_india_mid_5factor_10y_IISLNiftyMidcap150
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Mid Cap Funds versus Nifty Mid Cap 150, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_mid_1factor_10y_SPBSE500India,
+    model_india_mid_3factor_10y_SPBSE500India,
+    model_india_mid_4factor_10y_SPBSE500India,
+    model_india_mid_5factor_10y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Mid Cap Funds versus S&P BSE 500 India, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#' India Small Cap
+
+India_Small_Panel <- India_Small_Panel %>% 
+  left_join(Benchmarks_Factors, by = "date1") 
+
+India_Small_Panel <- India_Small_Panel %>% 
+  mutate(Funds.RF = MonthlyReturn - RF) %>% 
+  mutate(MSCIIndiaSmallNRUSD.RF = MSCIIndiaSmallNRUSD - RF) %>% 
+  mutate(IISLNiftySmallcap250TRINR.RF = IISLNiftySmallcap250TRINR...39 - RF) %>% 
+  mutate(SPBSE500IndiaTRINR.RF = SPBSE500IndiaTRINR...40 - RF)
+
+model_india_small_1factor_10y_FF <- lm(Funds.RF ~ Mkt.RF, data = India_Small_Panel)
+model_india_small_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = India_Small_Panel)
+model_india_small_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = India_Small_Panel)
+model_india_small_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = India_Small_Panel)
+
+model_india_small_1factor_10y_MSCIIndiaSmall <- lm(Funds.RF ~ MSCIIndiaSmallNRUSD.RF, data = India_Small_Panel)
+model_india_small_3factor_10y_MSCIIndiaSmall <- lm(Funds.RF ~ MSCIIndiaSmallNRUSD.RF + SMB + HML, data = India_Small_Panel)
+model_india_small_4factor_10y_MSCIIndiaSmall <- lm(Funds.RF ~ MSCIIndiaSmallNRUSD.RF + SMB + HML + WML, data = India_Small_Panel)
+model_india_small_5factor_10y_MSCIIndiaSmall <- lm(Funds.RF ~ MSCIIndiaSmallNRUSD.RF + SMB + HML + RMW + CMA, data = India_Small_Panel)
+
+model_india_small_1factor_10y_IISLNiftySmallcap250 <- lm(Funds.RF ~ IISLNiftySmallcap250TRINR.RF, data = India_Small_Panel)
+model_india_small_3factor_10y_IISLNiftySmallcap250 <- lm(Funds.RF ~ IISLNiftySmallcap250TRINR.RF + SMB + HML, data = India_Small_Panel)
+model_india_small_4factor_10y_IISLNiftySmallcap250 <- lm(Funds.RF ~ IISLNiftySmallcap250TRINR.RF + SMB + HML + WML, data = India_Small_Panel)
+model_india_small_5factor_10y_IISLNiftySmallcap250 <- lm(Funds.RF ~ IISLNiftySmallcap250TRINR.RF + SMB + HML + RMW + CMA, data = India_Small_Panel)
+
+model_india_small_1factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF, data = India_Small_Panel)
+model_india_small_3factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML, data = India_Small_Panel)
+model_india_small_4factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + WML, data = India_Small_Panel)
+model_india_small_5factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = India_Small_Panel)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_small_1factor_10y_FF,
+    model_india_small_3factor_10y_FF,
+    model_india_small_4factor_10y_FF,
+    model_india_small_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Small Cap Funds versus Fama French Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_small_1factor_10y_MSCIIndiaSmall,
+    model_india_small_3factor_10y_MSCIIndiaSmall,
+    model_india_small_4factor_10y_MSCIIndiaSmall,
+    model_india_small_5factor_10y_MSCIIndiaSmall
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Small Cap Funds versus MSCI India Small Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_small_1factor_10y_IISLNiftySmallcap250,
+    model_india_small_3factor_10y_IISLNiftySmallcap250,
+    model_india_small_4factor_10y_IISLNiftySmallcap250,
+    model_india_small_5factor_10y_IISLNiftySmallcap250
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Small Cap Funds versus Nifty Small Cap 250, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_small_1factor_10y_SPBSE500India,
+    model_india_small_3factor_10y_SPBSE500India,
+    model_india_small_4factor_10y_SPBSE500India,
+    model_india_small_5factor_10y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Small Cap Funds versus S&P BSE 500 India, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
+#' China Mid Cap
+
+China_Mid_Panel <- China_Mid_Panel %>% 
+  left_join(Benchmarks_Factors, by = "date1") 
+
+China_Mid_Panel <- China_Mid_Panel %>% 
+  mutate(Funds.RF = MonthlyReturn - RF) %>% 
+  mutate(CSI200MidCapPRCNY.RF = CSI200MidCapPRCNY - RF) %>% 
+  mutate(MSCIChinaMidGRUSD.RF = MSCIChinaMidGRUSD - RF) %>% 
+  mutate(CSIStateownedEnterprisesCompPRCNY.RF = CSIStateownedEnterprisesCompPRCNY - RF)
+
+model_china_mid_1factor_10y_FF <- lm(Funds.RF ~ Mkt.RF, data = China_Mid_Panel)
+model_china_mid_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = China_Mid_Panel)
+model_china_mid_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = China_Mid_Panel)
+model_china_mid_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = China_Mid_Panel)
+
+model_china_mid_1factor_10y_CSI200 <- lm(Funds.RF ~ CSI200MidCapPRCNY.RF, data = China_Mid_Panel)
+model_china_mid_3factor_10y_CSI200 <- lm(Funds.RF ~ CSI200MidCapPRCNY.RF + SMB + HML, data = China_Mid_Panel)
+model_china_mid_4factor_10y_CSI200 <- lm(Funds.RF ~ CSI200MidCapPRCNY.RF + SMB + HML + WML, data = China_Mid_Panel)
+model_china_mid_5factor_10y_CSI200 <- lm(Funds.RF ~ CSI200MidCapPRCNY.RF + SMB + HML + RMW + CMA, data = China_Mid_Panel)
+
+model_china_mid_1factor_10y_MSCIChinaMid <- lm(Funds.RF ~ MSCIChinaMidGRUSD.RF, data = China_Mid_Panel)
+model_china_mid_3factor_10y_MSCIChinaMid <- lm(Funds.RF ~ MSCIChinaMidGRUSD.RF + SMB + HML, data = China_Mid_Panel)
+model_china_mid_4factor_10y_MSCIChinaMid <- lm(Funds.RF ~ MSCIChinaMidGRUSD.RF + SMB + HML + WML, data = China_Mid_Panel)
+model_china_mid_5factor_10y_MSCIChinaMid <- lm(Funds.RF ~ MSCIChinaMidGRUSD.RF + SMB + HML + RMW + CMA, data = China_Mid_Panel)
+
+model_china_mid_1factor_10y_CSIStateownedEnterprises <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF, data = China_Mid_Panel)
+model_china_mid_3factor_10y_CSIStateownedEnterprises <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = China_Mid_Panel)
+model_china_mid_4factor_10y_CSIStateownedEnterprises <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = China_Mid_Panel)
+model_china_mid_5factor_10y_CSIStateownedEnterprises <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = China_Mid_Panel)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_mid_1factor_10y_FF,
+    model_china_mid_3factor_10y_FF,
+    model_china_mid_4factor_10y_FF,
+    model_china_mid_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Mid Cap Funds versus Fama French Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_mid_1factor_10y_CSI200,
+    model_china_mid_3factor_10y_CSI200,
+    model_china_mid_4factor_10y_CSI200,
+    model_china_mid_5factor_10y_CSI200
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Mid Cap Funds versus CSI 200 Mid Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_mid_1factor_10y_MSCIChinaMid,
+    model_china_mid_3factor_10y_MSCIChinaMid,
+    model_china_mid_4factor_10y_MSCIChinaMid,
+    model_china_mid_5factor_10y_MSCIChinaMid
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Mid Cap Funds versus MSCI China Mid Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_mid_1factor_10y_CSIStateownedEnterprises,
+    model_china_mid_3factor_10y_CSIStateownedEnterprises,
+    model_china_mid_4factor_10y_CSIStateownedEnterprises,
+    model_china_mid_5factor_10y_CSIStateownedEnterprises
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Mid Cap Funds versus CSI Stateowned Enterprises, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
+#' Asia Pacific Mid Cap
+
+AsiaPacific_Mid_Panel <- AsiaPacific_Mid_Panel %>% 
+  left_join(Benchmarks_Factors, by = "date1") 
+
+AsiaPacific_Mid_Panel <- AsiaPacific_Mid_Panel %>% 
+  mutate(Funds.RF = MonthlyReturn - RF) %>% 
+  mutate(MSCIACAsiaPacificExJapanMidNRUSD.RF = MSCIACAsiaPacificExJapanMidNRUSD - RF) %>% 
+  mutate(MSCIACAsiaPacExJPNNRUSD.RF = MSCIACAsiaPacExJPNNRUSD - RF)
+
+
+model_asiapacexjpn_mid_1factor_10y_FF <- lm(Funds.RF ~ Mkt.RF, data = AsiaPacific_Mid_Panel)
+model_asiapacexjpn_mid_3factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML, data = AsiaPacific_Mid_Panel)
+model_asiapacexjpn_mid_4factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + WML, data = AsiaPacific_Mid_Panel)
+model_asiapacexjpn_mid_5factor_10y_FF <- lm(Funds.RF ~ Mkt.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Mid_Panel)
+
+model_asiapacexjpn_mid_1factor_10y_MSCIACAsiaPacificExJapanMid <- lm(Funds.RF ~ MSCIACAsiaPacificExJapanMidNRUSD.RF, data = AsiaPacific_Mid_Panel)
+model_asiapacexjpn_mid_3factor_10y_MSCIACAsiaPacificExJapanMid <- lm(Funds.RF ~ MSCIACAsiaPacificExJapanMidNRUSD.RF + SMB + HML, data = AsiaPacific_Mid_Panel)
+model_asiapacexjpn_mid_4factor_10y_MSCIACAsiaPacificExJapanMid <- lm(Funds.RF ~ MSCIACAsiaPacificExJapanMidNRUSD.RF + SMB + HML + WML, data = AsiaPacific_Mid_Panel)
+model_asiapacexjpn_mid_5factor_10y_MSCIACAsiaPacificExJapanMid <- lm(Funds.RF ~ MSCIACAsiaPacificExJapanMidNRUSD.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Mid_Panel)
+
+model_asiapacexjpn_mid_1factor_10y_MSCIACAsiaPacExJPN <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF, data = AsiaPacific_Mid_Panel)
+model_asiapacexjpn_mid_3factor_10y_MSCIACAsiaPacExJPN <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML, data = AsiaPacific_Mid_Panel)
+model_asiapacexjpn_mid_4factor_10y_MSCIACAsiaPacExJPN <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + WML, data = AsiaPacific_Mid_Panel)
+model_asiapacexjpn_mid_5factor_10y_MSCIACAsiaPacExJPN <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Mid_Panel)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_mid_1factor_10y_FF,
+    model_asiapacexjpn_mid_3factor_10y_FF,
+    model_asiapacexjpn_mid_4factor_10y_FF,
+    model_asiapacexjpn_mid_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "AsiaPac ex Japan Funds versus Fama French Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_mid_1factor_10y_MSCIACAsiaPacificExJapanMid,
+    model_asiapacexjpn_mid_3factor_10y_MSCIACAsiaPacificExJapanMid,
+    model_asiapacexjpn_mid_4factor_10y_MSCIACAsiaPacificExJapanMid,
+    model_asiapacexjpn_mid_5factor_10y_MSCIACAsiaPacificExJapanMid
+  ),
+  include.ci = FALSE, 
+  caption = "AsiaPac ex Japan Funds versus MSCI AC AsiaPac ex Japan Mid Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_mid_1factor_10y_MSCIACAsiaPacExJPN,
+    model_asiapacexjpn_mid_3factor_10y_MSCIACAsiaPacExJPN,
+    model_asiapacexjpn_mid_4factor_10y_MSCIACAsiaPacExJPN,
+    model_asiapacexjpn_mid_5factor_10y_MSCIACAsiaPacExJPN
+  ),
+  include.ci = FALSE, 
+  caption = "AsiaPac ex Japan Funds versus MSCI AC AsiaPac ex Japan, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
 ##### One Regression per fund
 
-library(lme4)
-
-
-#Only keep funds with at lest 24 observations
+#Only keep funds with at least 24 observations
 China_Panel_Ind <- China_Panel[as.numeric(ave(China_Panel$FundID, China_Panel$FundID, FUN=length)) >= 24, ]
 AsiaPacific_Panel_Ind <- AsiaPacific_Panel[as.numeric(ave(AsiaPacific_Panel$FundID, AsiaPacific_Panel$FundID, FUN=length)) >= 24, ]
 India_Panel_Ind <- India_Panel[as.numeric(ave(India_Panel$FundID, India_Panel$FundID, FUN=length)) >= 24, ]
 AsiaEmerg_Panel_Ind <- AsiaEmerg_Panel[as.numeric(ave(AsiaEmerg_Panel$FundID, AsiaEmerg_Panel$FundID, FUN=length)) >= 24, ]
 
-
-
-library(broom)
-library(tidyverse)
-
-
-China_Panel_Ind_10y_FF <- China_Panel_Ind %>% 
+China_Panel_Ind_1factor_10y_FF <- China_Panel_Ind %>% 
   group_by(FundID) %>%
-  do(formula_FF = lm(Funds.RF ~ Mkt.RF , data = .))
+  do(formula_1factor_FF = lm(Funds.RF ~ Mkt.RF , data = .))
 
-fund_alphas_china_10y_FF <- tidy(China_Panel_Ind_10y_FF, formula_FF) %>% 
+fund_alphas_china_1factor_10y_FF <- tidy(China_Panel_Ind_1factor_10y_FF, formula_1factor_FF) %>% 
       filter(term == "(Intercept)")
 
-fund_alphas_china_10y_FF %>% 
+fund_alphas_china_1factor_10y_FF %>% 
   ggplot(aes(estimate)) +
       geom_freqpoly(bins = 50)
 
-sum(fund_alphas_china_10y_FF$estimate > 0 & fund_alphas_china_10y_FF$p.value < 0.05)
-sum(fund_alphas_china_10y_FF$estimate < 0 & fund_alphas_china_10y_FF$p.value < 0.05)
-sum(fund_alphas_china_10y_FF$p.value >= 0.05)
+sum(fund_alphas_china_1factor_10y_FF$estimate > 0 & fund_alphas_china_1factor_10y_FF$p.value < 0.05)
+sum(fund_alphas_china_1factor_10y_FF$estimate < 0 & fund_alphas_china_1factor_10y_FF$p.value < 0.05)
+sum(fund_alphas_china_1factor_10y_FF$p.value >= 0.05)
+
+China_Panel_Ind_4factor_10y_FF <- China_Panel_Ind %>% 
+  group_by(FundID) %>%
+  do(formula_4factor_FF = lm(Funds.RF ~ Mkt.RF + SMB + HML + WML , data = .))
+
+fund_alphas_china_4factor_10y_FF <- tidy(China_Panel_Ind_4factor_10y_FF, formula_4factor_FF) %>% 
+  filter(term == "(Intercept)")
+
+fund_alphas_china_4factor_10y_FF %>% 
+  ggplot(aes(estimate)) +
+  geom_freqpoly(bins = 50)
+
+
+sum(fund_alphas_china_4factor_10y_FF$estimate > 0 & fund_alphas_china_4factor_10y_FF$p.value < 0.05)
+sum(fund_alphas_china_4factor_10y_FF$estimate < 0 & fund_alphas_china_4factor_10y_FF$p.value < 0.05)
+sum(fund_alphas_china_4factor_10y_FF$p.value >= 0.05)
+
+#### Checking Relationship Between Fund Characteristics and Fund Alphas
+
+fund_alphas_china_4factor_10y_FF$alphadecile <-
+  ntile(fund_alphas_china_4factor_10y_FF$estimate, 10)
+
+China_Panel_Ind <- China_Panel_Ind  %>% 
+  left_join(fund_alphas_china_4factor_10y_FF, by = "FundID")
+
+library(zoo)
+
+
+China_Panel_Ind <- China_Panel_Ind %>% 
+  mutate(Age = as.yearmon(strptime("31.12.2019", format = "%d.%m.%Y"))-
+                 as.yearmon(strptime(`Inception Date`, format = "%Y-%m-%d")))
+
+China_Panel_Ind <- China_Panel_Ind %>% 
+  group_by(alphadecile) %>% 
+  mutate(AverageFundAge = mean(Age, na.rm = TRUE)) %>% 
+  mutate(AverageFundSize = mean(FundSize, na.rm = TRUE)) %>% 
+  mutate(AverageExpenseRatio = mean(`Annual Report Net Expense Ratio Year2019`, na.rm = TRUE)) %>% 
+  ungroup() 
+
+China_Panel_Ind <- China_Panel_Ind %>% 
+  mutate(LNSize = log(FundSize))
+
+China_Panel_Ind %>% 
+  group_by(alphadecile) %>% 
+  ggplot(aes(x = alphadecile, y = AverageFundSize)) +
+  geom_line()
+
+China_Panel_Ind %>% 
+  group_by(alphadecile) %>% 
+  ggplot(aes(x = alphadecile, y = AverageFundAge)) +
+  geom_line()
+
+China_Panel_Ind %>% 
+  group_by(alphadecile) %>% 
+  ggplot(aes(x = alphadecile, y = AverageExpenseRatio)) +
+  geom_line()
+
+model_alphas_china_age <- lm(estimate ~ Age, data = China_Panel_Ind)
+model_alphas_china_size <- lm(estimate ~ LNSize, data = China_Panel_Ind)
+model_alphas_china_expenseratio <- lm(estimate ~ `Annual Report Net Expense Ratio Year2019`, data = China_Panel_Ind)
+model_alphas_china_all <- lm(estimate ~ Age + LNSize + `Annual Report Net Expense Ratio Year2019`, data = China_Panel_Ind)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_alphas_china_age,
+    model_alphas_china_size,
+    model_alphas_china_expenseratio,
+    model_alphas_china_all
+  ),
+  include.ci = FALSE, 
+  caption = "Influences of Chinese Fund Characteristics on their Alphas",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
 
 #### Descriptive Statistics
 
@@ -1090,4 +1504,28 @@ Full_Equity_Panel_PerYear %>%
   geom_line(size=1) 
 
 
-    
+#### Table with all Alphas
+list <- ls(pattern = "model")
+list2 <- mget(list)[-1]
+alphalist <- lapply(list2, tidy) %>% 
+  bind_rows(.id = "column_labels") %>% 
+  filter(term == "(Intercept)") 
+  
+
+alphalist <- alphalist %>% 
+  separate(column_labels, c("Model", "Area", "Factor", "Time", "Benchmark"), "_")
+
+alphalist_wide <- dcast(alphalist, Area + Time + Benchmark ~ Factor, value.var = "estimate") %>% 
+  arrange(Area, Benchmark, Time)
+
+Factor_Chart <- Emerging_Factors %>% 
+  mutate(HML = cumprod(1+(HML/100))-1) %>% 
+  mutate(SMB = cumprod(1+(SMB/100))-1) %>% 
+  mutate(RMW = cumprod(1+(RMW/100))-1) %>% 
+  mutate(CMA = cumprod(1+(RMW/100))-1) %>% 
+  mutate(WML = cumprod(1+(WML/100))-1) 
+
+Factor_Chart <- melt(Factor_Chart, id.vars = "date1", measure.vars = c("HML", "SMB", "RMW", "CMA", "WML"), na.rm = FALSE, value.name = "value") 
+Factor_Chart %>% 
+  ggplot(aes(x = date1, y = value, color = variable)) +
+  geom_line(size=1) 
