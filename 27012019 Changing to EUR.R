@@ -1486,8 +1486,6 @@ htmlreg(
 
 ### Number of funds
 
-
-
 Full_Equity_Panel_PerYear <- Full_Equity_Panel %>%
     filter(month == 12) %>% 
     group_by(date1, `Investment Area`) 
@@ -1502,6 +1500,34 @@ Full_Equity_Panel_PerYear %>%
   mutate(`AuM in BN EUR` = sumAmount / 1000000000 ) %>% 
   ggplot(aes(x= date1, y=`AuM in BN EUR`, color= `Investment Area`)) + 
   geom_line(size=1) 
+
+
+#### Appendix
+
+
+Full_Equity_Panel <- Full_Equity_Panel %>% 
+  mutate(Age = as.yearmon(strptime("31.12.2019", format = "%d.%m.%Y"))-
+           as.yearmon(strptime(`Inception Date`, format = "%Y-%m-%d"))) 
+
+Descriptiv <- Full_Equity_Panel %>% 
+  group_by(`Investment Area`, year) %>% 
+  summarise(MeanAge = mean(Age, na.rm = TRUE),
+            MaxAge = max(Age, na.rm = TRUE),
+            MinAge = min(Age, na.rm = TRUE),
+            SDAge = sd(Age, na.rm = TRUE),
+            MeanReturn = mean(MonthlyReturn, na.rm = TRUE),
+            MaxReturn = max(MonthlyReturn, na.rm = TRUE),
+            MinReturn = min(MonthlyReturn, na.rm = TRUE),
+            SDReturn = sd(MonthlyReturn, na.rm = TRUE),
+            MeanSize = mean(FundSize, na.rm = TRUE),
+            MaxSize = max(FundSize, na.rm = TRUE),
+            MinSize = min(FundSize, na.rm = TRUE),
+            SDSize = sd(FundSize, na.rm = TRUE)) 
+
+dcast(Descriptiv, Area + Time + Benchmark ~ `Investment Area`, value.var = "estimate")
+
+
+
 
 
 #### Table with all Alphas
