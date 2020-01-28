@@ -1,0 +1,15 @@
+Methodology: https://www.msci.com/eqb/methodology/meth_docs/MSCI_Nov19_GIMIMethod.pdf
+
+MSCI China: https://www.msci.com/documents/10199/aa99c3a4-d48b-44ac-8caa-49522caa9021
+
+CSI 300: http://www.csindex.com.cn/en/indices/index-detail/000300
+
+CSI Stateowned Enterprises Composite: http://www.csindex.com.cn/old_notices/en/gsdt/file/CSI%20Local%20State-owned%20Enterprises%20100%20Index%20and%20CSI%20State-owned%20Enterprises%20200%20Index%20Methodology.pdf
+
+Nifty 50: https://www.bloomberg.com/quote/NIFTY:IND
+
+MSCI India: https://www.msci.com/documents/10199/1ad792ce-3199-445c-8be3-f2a035ac782d
+
+MSCI AC Asia Pac Ex JPN: https://www.msci.com/documents/10199/0df2ed3c-5fea-4414-b875-55dcd31705ad
+
+S&P BSE 500 India: https://www.bloomberg.com/quote/BSE500:IND
