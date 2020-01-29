@@ -1504,54 +1504,92 @@ Full_Equity_Panel_PerYear %>%
 
 #### Appendix
 
+# 
+# Full_Equity_Panel <- Full_Equity_Panel %>% 
+#   mutate(Age = as.yearmon(strptime("31.12.2019", format = "%d.%m.%Y"))-
+#            as.yearmon(strptime(`Inception Date`, format = "%Y-%m-%d"))) 
+# 
+# Descriptiv <- Full_Equity_Panel %>% 
+#   group_by(`Investment Area`, year) %>% 
+#   summarise(MeanAge = mean(Age, na.rm = TRUE),
+#             MaxAge = max(Age, na.rm = TRUE),
+#             MinAge = min(Age, na.rm = TRUE),
+#             SDAge = sd(Age, na.rm = TRUE),
+#             MeanReturn = mean(MonthlyReturn, na.rm = TRUE),
+#             MaxReturn = max(MonthlyReturn, na.rm = TRUE),
+#             MinReturn = min(MonthlyReturn, na.rm = TRUE),
+#             SDReturn = sd(MonthlyReturn, na.rm = TRUE),
+#             MeanSize = mean(FundSize, na.rm = TRUE),
+#             MaxSize = max(FundSize, na.rm = TRUE),
+#             MinSize = min(FundSize, na.rm = TRUE),
+#             SDSize = sd(FundSize, na.rm = TRUE)) 
+# 
+# dcast(Descriptiv, Area + Time + Benchmark ~ `Investment Area`, value.var = "estimate")
+# 
+# ### Extract ISIN List of best performing Chinese Funds
+# 
+# ISINGOODALPHAS <- China_Panel_Ind %>% 
+#   filter(alphadecile == 10) %>% 
+#   distinct(ISIN, keep_all = FALSE) %>% 
+#   select(ISIN)
+# 
+# 
+# 
+# #### Table with all Alphas
+# list <- ls(pattern = "model")
+# list2 <- mget(list)[-1]
+# alphalist <- lapply(list2, tidy) %>% 
+#   bind_rows(.id = "column_labels") %>% 
+#   filter(term == "(Intercept)") 
+#   
+# 
+# alphalist <- alphalist %>% 
+#   separate(column_labels, c("Model", "Area", "Factor", "Time", "Benchmark"), "_")
+# 
+# alphalist_wide <- dcast(alphalist, Area + Time + Benchmark ~ Factor, value.var = "estimate") %>% 
+#   arrange(Area, Benchmark, Time)
+# 
+# Factor_Chart <- Emerging_Factors %>% 
+#   mutate(HML = cumprod(1+(HML/100))-1) %>% 
+#   mutate(SMB = cumprod(1+(SMB/100))-1) %>% 
+#   mutate(RMW = cumprod(1+(RMW/100))-1) %>% 
+#   mutate(CMA = cumprod(1+(RMW/100))-1) %>% 
+#   mutate(WML = cumprod(1+(WML/100))-1) 
+# 
+# Factor_Chart <- melt(Factor_Chart, id.vars = "date1", measure.vars = c("HML", "SMB", "RMW", "CMA", "WML"), na.rm = FALSE, value.name = "value") 
+# Factor_Chart %>% 
+#   ggplot(aes(x = date1, y = value, color = variable)) +
+#   geom_line(size=1) 
 
-Full_Equity_Panel <- Full_Equity_Panel %>% 
-  mutate(Age = as.yearmon(strptime("31.12.2019", format = "%d.%m.%Y"))-
-           as.yearmon(strptime(`Inception Date`, format = "%Y-%m-%d"))) 
+#### Extract Top 10% and Low 10% of Chinese Funds versus CSI300 over the last three
 
-Descriptiv <- Full_Equity_Panel %>% 
-  group_by(`Investment Area`, year) %>% 
-  summarise(MeanAge = mean(Age, na.rm = TRUE),
-            MaxAge = max(Age, na.rm = TRUE),
-            MinAge = min(Age, na.rm = TRUE),
-            SDAge = sd(Age, na.rm = TRUE),
-            MeanReturn = mean(MonthlyReturn, na.rm = TRUE),
-            MaxReturn = max(MonthlyReturn, na.rm = TRUE),
-            MinReturn = min(MonthlyReturn, na.rm = TRUE),
-            SDReturn = sd(MonthlyReturn, na.rm = TRUE),
-            MeanSize = mean(FundSize, na.rm = TRUE),
-            MaxSize = max(FundSize, na.rm = TRUE),
-            MinSize = min(FundSize, na.rm = TRUE),
-            SDSize = sd(FundSize, na.rm = TRUE)) 
+China_Panel_Ind_3y <- subset(China_Panel, date1 > as.Date("2017-01-01"))
+China_Panel_Ind_3y <- China_Panel_Ind_3y[as.numeric(ave(China_Panel_Ind_3y$FundID, China_Panel_Ind_3y$FundID, FUN=length)) >= 24, ] 
 
-dcast(Descriptiv, Area + Time + Benchmark ~ `Investment Area`, value.var = "estimate")
+China_Panel_Ind_4factor_3y_CSI300 <- China_Panel_Ind_3y %>% 
+  group_by(FundID) %>%
+  do(formula_4factor_CSI300 = lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML , data = .))
 
+fund_alphas_china_4factor_3y_CSI300 <- tidy(China_Panel_Ind_4factor_3y_CSI300, formula_4factor_CSI300) %>% 
+  filter(term == "(Intercept)") %>% 
+  distinct(ISIN, .keep_all = TRUE)
 
+fund_alphas_china_4factor_3y_CSI300$alphadecile <-
+  ntile(fund_alphas_china_4factor_3y_CSI300$estimate, 10)
 
+fund_alphas_china_4factor_3y_CSI300 %>% 
+  group_by(alphadecile) %>% 
+  count()
 
+China_Panel_Ind_3y <- China_Panel_Ind_3y  %>% 
+  left_join(fund_alphas_china_4factor_3y_CSI300, by = "FundID")
 
-#### Table with all Alphas
-list <- ls(pattern = "model")
-list2 <- mget(list)[-1]
-alphalist <- lapply(list2, tidy) %>% 
-  bind_rows(.id = "column_labels") %>% 
-  filter(term == "(Intercept)") 
-  
+ISINGOODALPHAS_3y <- China_Panel_Ind_3y %>%
+  filter(alphadecile == 10) %>%
+  distinct(FundID, .keep_all = TRUE) %>% 
+  select(ISIN, estimate)
 
-alphalist <- alphalist %>% 
-  separate(column_labels, c("Model", "Area", "Factor", "Time", "Benchmark"), "_")
-
-alphalist_wide <- dcast(alphalist, Area + Time + Benchmark ~ Factor, value.var = "estimate") %>% 
-  arrange(Area, Benchmark, Time)
-
-Factor_Chart <- Emerging_Factors %>% 
-  mutate(HML = cumprod(1+(HML/100))-1) %>% 
-  mutate(SMB = cumprod(1+(SMB/100))-1) %>% 
-  mutate(RMW = cumprod(1+(RMW/100))-1) %>% 
-  mutate(CMA = cumprod(1+(RMW/100))-1) %>% 
-  mutate(WML = cumprod(1+(WML/100))-1) 
-
-Factor_Chart <- melt(Factor_Chart, id.vars = "date1", measure.vars = c("HML", "SMB", "RMW", "CMA", "WML"), na.rm = FALSE, value.name = "value") 
-Factor_Chart %>% 
-  ggplot(aes(x = date1, y = value, color = variable)) +
-  geom_line(size=1) 
+ISINBADALPHAS_3y <- China_Panel_Ind_3y %>%
+  filter(alphadecile == 1) %>%
+  distinct(FundID, .keep_all = TRUE) %>% 
+  select(ISIN, estimate)
