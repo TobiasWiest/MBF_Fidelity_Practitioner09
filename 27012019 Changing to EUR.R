@@ -5,6 +5,7 @@ library(reshape2)
 library(texreg)
 library(lme4)
 library(broom)
+library(zoo)
 
 Full_Equity_Sample <- read_excel("Full Equity Sample.xlsx")
 
@@ -1430,8 +1431,6 @@ fund_alphas_china_4factor_10y_FF$alphadecile <-
 China_Panel_Ind <- China_Panel_Ind  %>% 
   left_join(fund_alphas_china_4factor_10y_FF, by = "FundID")
 
-library(zoo)
-
 
 China_Panel_Ind <- China_Panel_Ind %>% 
   mutate(Age = as.yearmon(strptime("31.12.2019", format = "%d.%m.%Y"))-
@@ -1441,8 +1440,7 @@ China_Panel_Ind <- China_Panel_Ind %>%
   group_by(alphadecile) %>% 
   mutate(AverageFundAge = mean(Age, na.rm = TRUE)) %>% 
   mutate(AverageFundSize = mean(FundSize, na.rm = TRUE)) %>% 
-  mutate(AverageExpenseRatio = mean(`Annual Report Net Expense Ratio Year2019`, na.rm = TRUE)) %>% 
-  ungroup() 
+  mutate(AverageExpenseRatio = mean(`Annual Report Net Expense Ratio Year2019`, na.rm = TRUE))
 
 China_Panel_Ind <- China_Panel_Ind %>% 
   mutate(LNSize = log(FundSize))
@@ -1593,3 +1591,134 @@ ISINBADALPHAS_3y <- China_Panel_Ind_3y %>%
   filter(alphadecile == 1) %>%
   distinct(FundID, .keep_all = TRUE) %>% 
   select(ISIN, estimate)
+
+
+
+##### Holding-Level-Analysis
+
+HOLDINGS <- read_excel("HOLDINGS.xlsx")
+INSTOWNER <- read_excel("INSTOWNER.xlsm")
+SECTORSOE <- read_excel("SectorSOE.xlsm")
+CSI300 <- read_excel("CSI300.xlsx")
+ANALYST <- read_excel("ANALYST.xlsm")
+
+ANALYST <- melt(ANALYST, 
+     id.vars = "date1", 
+     measure.vars= c(2:1207),
+     variable.name = "RIC", value.name  = "NumberAnalyst") %>% 
+     filter(NumberAnalyst != "#N/A Invalid Security") %>% 
+     filter(NumberAnalyst != "<NA>") %>% 
+     filter(NumberAnalyst != "#N/A N/A") %>% 
+     mutate(Quarter = as.yearqtr(date1, format = "%m-%d-%Y")) %>% 
+     arrange(RIC, Quarter)
+
+INSTOWNER <-  melt(INSTOWNER, 
+              id.vars = "date1", 
+              measure.vars= c(2:1207),
+              variable.name = "RIC", value.name  = "INSTOWN")%>% 
+              filter(INSTOWN != "#N/A Invalid Security") %>% 
+              filter(INSTOWN != "<NA>") %>% 
+              filter(INSTOWN != "#N/A N/A") %>% 
+              mutate(Quarter = as.yearqtr(date1, format = "%m-%d-%Y"))
+
+
+HOLDING_FULL <- INSTOWNER %>% 
+  left_join(ANALYST, by = c("RIC", "Quarter")) 
+
+Test <- HOLDING_FULL %>% 
+  group_by(Quarter, RIC) %>% 
+  count() %>% 
+  filter(n > 1)
+
+
+HOLDINGS <- HOLDINGS %>%   
+  mutate(Quarter = as.yearqtr(Date, format = "%m-%d-%Y")) %>% 
+  mutate(date1 = as.Date(Date, format = "%m-%d-%Y")) %>% 
+  arrange(ISIN, Quarter, RIC) %>% 
+  filter(RIC != "NA")
+
+
+HOLDINGS <- HOLDINGS %>% 
+  inner_join(HOLDING_FULL, by = c("RIC", "Quarter")) %>% 
+  inner_join(SECTORSOE, by = "RIC")
+
+HOLDINGSTUDY <- China_Panel_Ind_3y %>%
+  filter(ISIN %in% HOLDINGS$ISIN) %>% 
+  select(ISIN, EquityStyle, FundSize, year, MonthlyReturn, date1, CSI300NRUSD, RF, SMB, HML, WML, estimate, alphadecile) %>% 
+  mutate(Quarter = as.yearqtr(date1) - 0.25)
+
+HOLDINGSTUDYFULL <- HOLDINGSTUDY %>% 
+  left_join(HOLDINGS, by = c("ISIN", "Quarter")) %>% 
+  group_by(ISIN, date1.x.x) %>% 
+  mutate(ScaledWeights = Weight/sum(Weight)) 
+
+HOLDINGSTUDYFULL <- HOLDINGSTUDYFULL %>% 
+  mutate(SOEDummy = if_else(SOE == "Sovereign" | SOE == "Regional", 1, 0))
+
+HOLDINGSTUDYFULL <- HOLDINGSTUDYFULL %>% 
+  mutate(ANALYSTCONTR = ScaledWeights * as.numeric(NumberAnalyst)) %>% 
+  mutate(INSTICONTR = ScaledWeights * as.numeric(INSTOWN))
+
+HOLDINGSSTUDYFULL <- HOLDINGSTUDYFULL %>% 
+  group_by(ISIN, date1.x.x) %>% 
+  mutate(SOEWeight= sum(SOEDummy*ScaledWeights, na.rm = TRUE)) %>% 
+  mutate(ANALYSTFUND = sum(ANALYSTCONTR, na.rm = TRUE)) %>% 
+  mutate(INSTIFUND = sum(INSTICONTR, na.rm = TRUE)) %>% 
+  mutate(TOP = if_else(alphadecile == 10, 1, 0)) %>% 
+  ungroup()
+
+HOLDINGS_REGRESSION <- HOLDINGSSTUDYFULL %>% 
+  distinct(ISIN, date1.x.x, .keep_all = TRUE) 
+
+HOLDINGS_REGRESSION <- HOLDINGS_REGRESSION %>% 
+  group_by(ISIN, year) %>%  
+  mutate(SOEWeight = mean(SOEWeight, na.rm = TRUE)) %>% 
+  mutate(ANALYSTFUND = mean(ANALYSTFUND, na.rm = TRUE)) %>% 
+  mutate(INSTIFUND = mean(INSTIFUND, na.rm = TRUE))
+  
+model_probit_SOE <- glm(TOP ~ SOEWeight,family = binomial(link = "probit"), data = HOLDINGS_REGRESSION)
+model_probit_ANALYST <- glm(TOP ~ ANALYSTFUND, family = binomial(link = "probit"), data = HOLDINGS_REGRESSION)
+model_probit_INSTI <- glm(TOP ~ INSTIFUND, family = binomial(link = "probit"), data = HOLDINGS_REGRESSION)
+model_probit_full <-  glm(TOP ~ SOEWeight + ANALYSTFUND + INSTIFUND, family = binomial(link = "probit"), data = HOLDINGS_REGRESSION)
+
+model_ols_SOE <- lm(estimate ~ SOEWeight, data = HOLDINGS_REGRESSION)
+model_ols_ANALYST <- lm(estimate ~ ANALYSTFUND, data = HOLDINGS_REGRESSION)
+model_ols_INSTI <- lm(estimate ~ INSTIFUND, data = HOLDINGS_REGRESSION)
+model_ols_full <- lm(estimate ~ SOEWeight + ANALYSTFUND + INSTIFUND, data = HOLDINGS_REGRESSION)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_ols_SOE ,
+    model_ols_ANALYST ,
+    model_ols_INSTI ,
+    model_ols_full
+  ),
+  include.ci = FALSE, 
+  caption = "Influences of Chinese Fund Holdings on their Alphas",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
+view(HOLDINGS_REGRESSION)
+
+HOLDINGS_REGRESSION %>% 
+  ggplot(aes(x = SOEWeight, y = estimate)) +
+  geom_point(aes(x = SOEWeight, y = estimate)) +
+  geom_smooth(method = "lm")
+
+HOLDINGS_REGRESSION %>% 
+  ggplot(aes(x = ANALYSTFUND, y = estimate)) +
+  geom_point(aes(x = ANALYSTFUND, y = estimate)) +
+  geom_smooth(method = "lm")
+
+HOLDINGS_REGRESSION %>% 
+  ggplot(aes(x = INSTIFUND, y = estimate)) +
+  geom_point(aes(x = INSTIFUND, y = estimate)) +
+  geom_smooth(method = "lm")
+
+library(AER)
+coeftest(model_probit_SOE, vcov. = vcovHC, type = "HC1")
+coeftest(model_probit_ANALYST,  vcov. = vcovHC, type = "HC1")
+coeftest(model_probit_INSTI, vcov. = vcovHC, type = "HC1")
+coeftest(model_probit_full, vcov. = vcovHC, type = "HC1")
