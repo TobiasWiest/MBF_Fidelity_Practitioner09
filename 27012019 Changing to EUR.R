@@ -730,22 +730,33 @@ Full_Equity_Panel_PerYear %>%
 # 
 # alphalist <- alphalist %>% 
 #   separate(column_labels, c("Model", "Area", "Factor", "Time", "Benchmark"), "_")
-# 
-# alphalist_wide <- dcast(alphalist, Area + Time + Benchmark ~ Factor, value.var = "estimate") %>% 
-#   arrange(Area, Benchmark, Time)
-# 
-# Factor_Chart <- Emerging_Factors %>% 
-#   mutate(HML = cumprod(1+(HML/100))-1) %>% 
-#   mutate(SMB = cumprod(1+(SMB/100))-1) %>% 
-#   mutate(RMW = cumprod(1+(RMW/100))-1) %>% 
-#   mutate(CMA = cumprod(1+(RMW/100))-1) %>% 
-#   mutate(WML = cumprod(1+(WML/100))-1) 
-# 
-# Factor_Chart <- melt(Factor_Chart, id.vars = "date1", measure.vars = c("HML", "SMB", "RMW", "CMA", "WML"), na.rm = FALSE, value.name = "value") 
-# Factor_Chart %>% 
-#   ggplot(aes(x = date1, y = value, color = variable)) +
-#   geom_line(size=1) 
 
+# alphalist_wide <- dcast(alphalist, Area + Time + Benchmark ~ Factor, value.var = "estimate") %>%
+#   arrange(Area, Benchmark, Time)
+
+Factor_Chart <- Emerging_Factors %>%
+  mutate(HML = cumprod(1+(HML/100))-1) %>%
+  mutate(SMB = cumprod(1+(SMB/100))-1) %>%
+  mutate(RMW = cumprod(1+(RMW/100))-1) %>%
+  mutate(CMA = cumprod(1+(RMW/100))-1) %>%
+  mutate(WML = cumprod(1+(WML/100))-1)
+
+Factor_Chart <- melt(Factor_Chart, id.vars = "date1", measure.vars = c("HML", "SMB", "RMW", "CMA", "WML"), na.rm = FALSE, value.name = "value")
+Factor_Chart %>%
+  ggplot(aes(x = date1, y = value, color = variable)) +
+  geom_line(size=1)
+
+Benchmark_Chart <- Benchmarks_Factors %>%
+  mutate(ChinaSOE = cumprod(1+(CSIStateownedEnterprisesCompPRCNY/100))-1) %>%
+  mutate(China = cumprod(1+(CSI300NRUSD/100))-1) %>%
+  mutate(EM = cumprod(1+(MSCIEMAsiaNRUSD/100))-1) %>%
+  mutate(India = cumprod(1+(IISLNifty50TRINR/100))-1) %>%
+  mutate(AsiaPacExJPN = cumprod(1+(MSCIACAsiaPacExJPNNRUSD/100))-1)
+
+Benchmark_Chart <- melt(Benchmark_Chart, id.vars = "date1", measure.vars = c("ChinaSOE", "China", "EM", "India", "AsiaPacExJPN"), na.rm = FALSE, value.name = "value")
+Benchmark_Chart %>%
+  ggplot(aes(x = date1, y = value, color = variable)) +
+  geom_line(size=1)
 #### Extract Top 10% and Low 10% of Chinese Funds versus CSI300 over the last three
 
 China_Panel_Ind_3y <- subset(China_Panel, date1 > as.Date("2017-01-01"))
