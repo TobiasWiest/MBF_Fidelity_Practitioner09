@@ -784,13 +784,12 @@ China_Panel_Ind_3y <- China_Panel_Ind_3y  %>%
 ISINGOODALPHAS_3y <- China_Panel_Ind_3y %>%
   filter(alphadecile == 10) %>%
   distinct(FundID, .keep_all = TRUE) %>% 
-  select(ISIN, estimate)
+  select(ISIN, Name,  estimate)
 
 ISINBADALPHAS_3y <- China_Panel_Ind_3y %>%
   filter(alphadecile == 1) %>%
   distinct(FundID, .keep_all = TRUE) %>% 
-  select(ISIN, estimate)
-
+  select(ISIN, Name, estimate)
 
 
 ##### Holding-Level-Analysis
@@ -798,7 +797,6 @@ ISINBADALPHAS_3y <- China_Panel_Ind_3y %>%
 HOLDINGS <- read_excel("HOLDINGS.xlsx")
 INSTOWNER <- read_excel("INSTOWNER.xlsm")
 SECTORSOE <- read_excel("SectorSOE.xlsm")
-CSI300 <- read_excel("CSI300.xlsx")
 ANALYST <- read_excel("ANALYST.xlsm")
 
 ANALYST <- melt(ANALYST, 
@@ -824,12 +822,6 @@ INSTOWNER <-  melt(INSTOWNER,
 HOLDING_FULL <- INSTOWNER %>% 
   left_join(ANALYST, by = c("RIC", "Quarter")) 
 
-Test <- HOLDING_FULL %>% 
-  group_by(Quarter, RIC) %>% 
-  count() %>% 
-  filter(n > 1)
-
-
 HOLDINGS <- HOLDINGS %>%   
   mutate(Quarter = as.yearqtr(Date, format = "%m-%d-%Y")) %>% 
   mutate(date1 = as.Date(Date, format = "%m-%d-%Y")) %>% 
@@ -843,13 +835,14 @@ HOLDINGS <- HOLDINGS %>%
 
 HOLDINGSTUDY <- China_Panel_Ind_3y %>%
   filter(ISIN %in% HOLDINGS$ISIN) %>% 
-  select(ISIN, EquityStyle, FundSize, year, MonthlyReturn, date1, CSI300NRUSD, RF, SMB, HML, WML, estimate, alphadecile) %>% 
+  select(ISIN, EquityStyle, FundSize, year, MonthlyReturn, Funds.RF, date1, CSI300NRUSD.RF, RF, SMB, HML, WML, estimate, alphadecile) %>% 
   mutate(Quarter = as.yearqtr(date1) - 0.25)
 
 HOLDINGSTUDYFULL <- HOLDINGSTUDY %>% 
   left_join(HOLDINGS, by = c("ISIN", "Quarter")) %>% 
   group_by(ISIN, date1.x.x) %>% 
-  mutate(ScaledWeights = Weight/sum(Weight)) 
+  mutate(ScaledWeights = Weight/sum(Weight)) %>% 
+  ungroup()
 
 HOLDINGSTUDYFULL <- HOLDINGSTUDYFULL %>% 
   mutate(SOEDummy = if_else(SOE == "Sovereign" | SOE == "Regional", 1, 0))
@@ -857,6 +850,7 @@ HOLDINGSTUDYFULL <- HOLDINGSTUDYFULL %>%
 HOLDINGSTUDYFULL <- HOLDINGSTUDYFULL %>% 
   mutate(ANALYSTCONTR = ScaledWeights * as.numeric(NumberAnalyst)) %>% 
   mutate(INSTICONTR = ScaledWeights * as.numeric(INSTOWN))
+
 
 HOLDINGSSTUDYFULL <- HOLDINGSTUDYFULL %>% 
   group_by(ISIN, date1.x.x) %>% 
@@ -867,18 +861,19 @@ HOLDINGSSTUDYFULL <- HOLDINGSTUDYFULL %>%
   ungroup()
 
 HOLDINGS_REGRESSION <- HOLDINGSSTUDYFULL %>% 
-  distinct(ISIN, date1.x.x, .keep_all = TRUE) 
+  distinct(ISIN, date1.x.x, .keep_all = TRUE) %>% 
+  arrange(ISIN, date1.x.x)
 
-HOLDINGS_REGRESSION <- HOLDINGS_REGRESSION %>% 
-  group_by(ISIN, year) %>%  
-  mutate(SOEWeight = mean(SOEWeight, na.rm = TRUE)) %>% 
-  mutate(ANALYSTFUND = mean(ANALYSTFUND, na.rm = TRUE)) %>% 
-  mutate(INSTIFUND = mean(INSTIFUND, na.rm = TRUE))
-  
-model_probit_SOE <- glm(TOP ~ SOEWeight,family = binomial(link = "probit"), data = HOLDINGS_REGRESSION)
-model_probit_ANALYST <- glm(TOP ~ ANALYSTFUND, family = binomial(link = "probit"), data = HOLDINGS_REGRESSION)
-model_probit_INSTI <- glm(TOP ~ INSTIFUND, family = binomial(link = "probit"), data = HOLDINGS_REGRESSION)
-model_probit_full <-  glm(TOP ~ SOEWeight + ANALYSTFUND + INSTIFUND, family = binomial(link = "probit"), data = HOLDINGS_REGRESSION)
+# HOLDINGS_REGRESSION <- HOLDINGS_REGRESSION %>% 
+#   group_by(ISIN) %>%  
+#   mutate(SOEWeight = mean(SOEWeight, na.rm = TRUE)) %>% 
+#   mutate(ANALYSTFUND = mean(ANALYSTFUND, na.rm = TRUE)) %>% 
+#   mutate(INSTIFUND = mean(INSTIFUND, na.rm = TRUE)) 
+
+model_return_SOE <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML + SOEWeight, data  = HOLDINGS_REGRESSION)
+model_return_ANALYST <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML + ANALYSTFUND, data  = HOLDINGS_REGRESSION)  
+model_return_INSTI <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML + INSTIFUND, data  = HOLDINGS_REGRESSION)  
+model_return_full <- lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML + SOEWeight + ANALYSTFUND + INSTIFUND, data  = HOLDINGS_REGRESSION)  
 
 model_ols_SOE <- lm(estimate ~ SOEWeight, data = HOLDINGS_REGRESSION)
 model_ols_ANALYST <- lm(estimate ~ ANALYSTFUND, data = HOLDINGS_REGRESSION)
@@ -909,6 +904,67 @@ coeftest(model_probit_INSTI, vcov. = vcovHC, type = "HC1")
 coeftest(model_probit_full, vcov. = vcovHC, type = "HC1")
 
 
+
+#### CSI 300 vs MSCI CHINA
+
+CSI300 <- read_excel("CSI300.xlsx")
+
+CSI300 <- CSI300 %>%   
+  mutate(date1 = as.Date(Date, format = "%m/%d/%Y")) %>% 
+  arrange(date1, RIC) %>% 
+  filter(RIC != "NA")
+
+CSI300 <- CSI300 %>%
+  mutate(Quarter = as.yearqtr(date1)) %>% 
+  inner_join(HOLDING_FULL, by = c("RIC", "Quarter")) %>% 
+  inner_join(SECTORSOE, by = "RIC")
+
+CSI300 <- CSI300 %>% 
+  group_by(date1) %>% 
+  mutate(ScaledWeights = Weight/sum(Weight))  %>% 
+  mutate(ANALYSTCONTR = ScaledWeights * as.numeric(NumberAnalyst)) %>% 
+  mutate(INSTICONTR = ScaledWeights * as.numeric(INSTOWN)) %>% 
+  mutate(SOEDummy = if_else(SOE == "Sovereign" | SOE == "Regional", 1, 0)) %>% 
+  mutate(SOEWeight= sum(SOEDummy*ScaledWeights, na.rm = TRUE)) %>% 
+  mutate(ANALYSTFUND = sum(ANALYSTCONTR, na.rm = TRUE)) %>% 
+  mutate(INSTIFUND = sum(INSTICONTR, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  distinct(date1, .keep_all = TRUE) %>% 
+  mutate(identifier = "CSI300") %>% 
+  select(identifier, SOEWeight, ANALYSTFUND, INSTIFUND, Quarter) %>% 
+  mutate(TOP = 2)
+
+FUNDS <- HOLDINGS_REGRESSION %>% 
+  distinct(ISIN, Quarter, .keep_all = TRUE) %>% 
+  rename(identifier = ISIN) %>% 
+  select(identifier, SOEWeight, ANALYSTFUND, INSTIFUND, Quarter, TOP) %>% 
+  ungroup()
+
+IndexDistortion <- do.call(rbind, list(FUNDS, CSI300))
+IndexDistortion %>% 
+  ggplot(aes(x = Quarter, y = ANALYSTFUND, color = identifier)) +
+  geom_line(aes(x = Quarter, y = ANALYSTFUND))
+
+IndexDistortion <- IndexDistortion %>% 
+  group_by(Quarter, TOP) %>% 
+  mutate(meanSOE = mean(SOEWeight, na.ra = TRUE)) %>% 
+  mutate(meanANALSYST = mean(ANALYSTFUND, na.ra = TRUE)) %>%  
+  mutate(meanINTI = mean(INSTIFUND, na.ra = TRUE)) %>% 
+  ungroup() %>% 
+  distinct(Quarter, TOP, .keep_all = TRUE) %>% 
+  mutate(Class = if_else(TOP == 1, "TOP", if_else(TOP == 2, "WORST", "CSI300")))
+
+IndexDistortion %>% 
+  ggplot(aes(x = Quarter, y = meanSOE, color = Class)) +
+  geom_line(aes(x = Quarter, y = meanSOE))
+
+IndexDistortion %>% 
+  ggplot(aes(x = Quarter, y = meanINTI, color = Class)) +
+  geom_line(aes(x = Quarter, y = meanINTI))
+
+IndexDistortion %>% 
+  ggplot(aes(x = Quarter, y = meanSOE, color = Class)) +
+  geom_line(aes(x = Quarter, y = meanSOE))
 ##### China All Caps
 
 #+ results='asis'
@@ -1770,3 +1826,48 @@ htmlreg(
   caption = "Influences of Chinese Fund Holdings on their Alphas",
   doctype = FALSE,
   caption.above = TRUE)
+
+
+#### China 4 Factor for different Benchmarks
+
+China_Panel_Ind_4factor_10y_FF <- China_Panel_Ind %>% 
+  group_by(FundID) %>%
+  do(formula_4factor_FF = lm(Funds.RF ~ Mkt.RF + SMB + HML + WML , data = .))
+
+fund_alphas_china_4factor_10y_FF <- tidy(China_Panel_Ind_4factor_10y_FF, formula_4factor_FF) %>% 
+  filter(term == "(Intercept)") %>% 
+  mutate(benchmark = "Fama French")
+
+China_Panel_Ind_4factor_10y_MSCICHINA <- China_Panel_Ind %>% 
+  group_by(FundID) %>%
+  do(formula_4factor_MSCICHINA = lm(Funds.RF ~ MSCIChinaNRUSD.RF + SMB + HML + WML , data = .))
+
+fund_alphas_china_4factor_10y_MSCICHINA <- tidy(China_Panel_Ind_4factor_10y_MSCICHINA, formula_4factor_MSCICHINA) %>% 
+  filter(term == "(Intercept)") %>% 
+  mutate(benchmark = "MSCI China")
+
+China_Panel_Ind_4factor_10y_CSI300 <- China_Panel_Ind %>% 
+  group_by(FundID) %>%
+  do(formula_4factor_CSI300 = lm(Funds.RF ~ CSI300NRUSD.RF + SMB + HML + WML , data = .))
+
+fund_alphas_china_4factor_10y_CSI300 <- tidy(China_Panel_Ind_4factor_10y_CSI300, formula_4factor_CSI300) %>% 
+  filter(term == "(Intercept)") %>% 
+  mutate(benchmark = "CSI 300")
+
+China_Panel_Ind_4factor_10y_CSISOE <- China_Panel_Ind %>% 
+  group_by(FundID) %>%
+  do(formula_4factor_CSISOE = lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML , data = .))
+
+fund_alphas_china_4factor_10y_CSISOE <- tidy(China_Panel_Ind_4factor_10y_CSISOE, formula_4factor_CSISOE) %>% 
+  filter(term == "(Intercept)") %>% 
+  mutate(benchmark = "CSI SOE")
+
+fund_alphas_4factor_china_10y <- do.call("rbind", list(fund_alphas_china_4factor_10y_CSISOE, 
+                                                       fund_alphas_china_4factor_10y_CSI300,
+                                                       fund_alphas_china_4factor_10y_MSCICHINA,
+                                                       fund_alphas_china_4factor_10y_FF)) %>% 
+  select(FundID, benchmark, estimate)
+
+ggplot(fund_alphas_4factor_china_10y , 
+       aes(x = estimate, color = benchmark)) + geom_density() + xlim(-2.5, 2.5)
+
