@@ -236,159 +236,6 @@ model_china_3factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY
 model_china_4factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
 model_china_5factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
 
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_10y_FF,
-    model_china_3factor_10y_FF,
-    model_china_4factor_10y_FF,
-    model_china_5factor_10y_FF 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus Fama French EM Benchmark 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-htmlreg(
-  list(
-    model_china_1factor_5y_FF,
-    model_china_3factor_5y_FF,
-    model_china_4factor_5y_FF,
-    model_china_5factor_5y_FF 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus Fama French EM Benchmark 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-htmlreg(
-  list(
-    model_china_1factor_3y_FF,
-    model_china_3factor_3y_FF,
-    model_china_4factor_3y_FF,
-    model_china_5factor_3y_FF 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus Fama French EM Benchmark 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_10y_CSI300,
-    model_china_3factor_10y_CSI300,
-    model_china_4factor_10y_CSI300,
-    model_china_5factor_10y_CSI300 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus CSI 300, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_5y_CSI300,
-    model_china_3factor_5y_CSI300,
-    model_china_4factor_5y_CSI300,
-    model_china_5factor_5y_CSI300 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus CSI 300, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_3y_CSI300,
-    model_china_3factor_3y_CSI300,
-    model_china_4factor_3y_CSI300,
-    model_china_5factor_3y_CSI300 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus CSI 300, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_10y_MSCIChina,
-    model_china_3factor_10y_MSCIChina,
-    model_china_4factor_10y_MSCIChina,
-    model_china_5factor_10y_MSCIChina 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus MSCI China, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_5y_MSCIChina,
-    model_china_3factor_5y_MSCIChina,
-    model_china_4factor_5y_MSCIChina,
-    model_china_5factor_5y_MSCIChina 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus MSCI China, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_3y_MSCIChina,
-    model_china_3factor_3y_MSCIChina,
-    model_china_4factor_3y_MSCIChina,
-    model_china_5factor_3y_MSCIChina 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus MSCI China, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_10y_CSISOE,
-    model_china_3factor_10y_CSISOE,
-    model_china_4factor_10y_CSISOE,
-    model_china_5factor_10y_CSISOE 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_10y_CSISOE,
-    model_china_3factor_10y_CSISOE,
-    model_china_4factor_10y_CSISOE,
-    model_china_5factor_10y_CSISOE 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_1factor_3y_CSISOE,
-    model_china_3factor_3y_CSISOE,
-    model_china_4factor_3y_CSISOE,
-    model_china_5factor_3y_CSISOE 
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
 
 #### Asia Pacific ex Japan Factor Models
 
@@ -463,153 +310,7 @@ model_asiapacexjpn_4factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCo
 model_asiapacexjpn_5factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
 
 
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_10y_FF,
-    model_asiapacexjpn_3factor_10y_FF,
-    model_asiapacexjpn_4factor_10y_FF,
-    model_asiapacexjpn_5factor_10y_FF 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
 
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_5y_FF,
-    model_asiapacexjpn_3factor_5y_FF,
-    model_asiapacexjpn_4factor_5y_FF,
-    model_asiapacexjpn_5factor_5y_FF 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_3y_FF,
-    model_asiapacexjpn_3factor_3y_FF,
-    model_asiapacexjpn_4factor_3y_FF,
-    model_asiapacexjpn_5factor_3y_FF 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_10y_CSI300,
-    model_asiapacexjpn_3factor_10y_CSI300,
-    model_asiapacexjpn_4factor_10y_CSI300,
-    model_asiapacexjpn_5factor_10y_CSI300 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus CSI 300, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_5y_CSI300,
-    model_asiapacexjpn_3factor_5y_CSI300,
-    model_asiapacexjpn_4factor_5y_CSI300,
-    model_asiapacexjpn_5factor_5y_CSI300 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus CSI 300, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_3y_CSI300,
-    model_asiapacexjpn_3factor_3y_CSI300,
-    model_asiapacexjpn_4factor_3y_CSI300,
-    model_asiapacexjpn_5factor_3y_CSI300 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus CSI 300, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_10y_MSCIAsiaPacExJpn,
-    model_asiapacexjpn_3factor_10y_MSCIAsiaPacExJpn,
-    model_asiapacexjpn_4factor_10y_MSCIAsiaPacExJpn,
-    model_asiapacexjpn_5factor_10y_MSCIAsiaPacExJpn 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_5y_MSCIAsiaPacExJpn,
-    model_asiapacexjpn_3factor_5y_MSCIAsiaPacExJpn,
-    model_asiapacexjpn_4factor_5y_MSCIAsiaPacExJpn,
-    model_asiapacexjpn_5factor_5y_MSCIAsiaPacExJpn 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_3y_MSCIAsiaPacExJpn,
-    model_asiapacexjpn_3factor_3y_MSCIAsiaPacExJpn,
-    model_asiapacexjpn_4factor_3y_MSCIAsiaPacExJpn,
-    model_asiapacexjpn_5factor_3y_MSCIAsiaPacExJpn 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_10y_CSISOE,
-    model_asiapacexjpn_3factor_10y_CSISOE,
-    model_asiapacexjpn_4factor_10y_CSISOE,
-    model_asiapacexjpn_5factor_10y_CSISOE 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_5y_CSISOE,
-    model_asiapacexjpn_3factor_5y_CSISOE,
-    model_asiapacexjpn_4factor_5y_CSISOE,
-    model_asiapacexjpn_5factor_5y_CSISOE 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-htmlreg(
-  list(
-    model_asiapacexjpn_1factor_3y_CSISOE,
-    model_asiapacexjpn_3factor_3y_CSISOE,
-    model_asiapacexjpn_4factor_3y_CSISOE,
-    model_asiapacexjpn_5factor_3y_CSISOE 
-  ),
-  include.ci = FALSE, 
-  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
 
 #### India
 
@@ -682,161 +383,6 @@ model_india_3factor_3y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SM
 model_india_4factor_3y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + WML, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
 model_india_5factor_3y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = subset(India_Panel, date1 > as.Date("2017-01-01")))
 
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_10y_FF,
-    model_india_3factor_10y_FF,
-    model_india_4factor_10y_FF,
-    model_india_5factor_10y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "India versus Fama French EM Benchmark, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_5y_FF,
-    model_india_3factor_5y_FF,
-    model_india_4factor_5y_FF,
-    model_india_5factor_5y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "India versus Fama French EM Benchmark, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_3y_FF,
-    model_india_3factor_3y_FF,
-    model_india_4factor_3y_FF,
-    model_india_5factor_3y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "India versus Fama French EM Benchmark, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_10y_IISLNifty50,
-    model_india_3factor_10y_IISLNifty50,
-    model_india_4factor_10y_IISLNifty50,
-    model_india_5factor_10y_IISLNifty50
-  ),
-  include.ci = FALSE, 
-  caption = "India versus Nifty 50, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_5y_IISLNifty50,
-    model_india_3factor_5y_IISLNifty50,
-    model_india_4factor_5y_IISLNifty50,
-    model_india_5factor_5y_IISLNifty50
-  ),
-  include.ci = FALSE, 
-  caption = "India versus Nifty 50, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_3y_IISLNifty50,
-    model_india_3factor_3y_IISLNifty50,
-    model_india_4factor_3y_IISLNifty50,
-    model_india_5factor_3y_IISLNifty50
-  ),
-  include.ci = FALSE, 
-  caption = "India versus Nifty 50, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_10y_MSCIIndia,
-    model_india_3factor_10y_MSCIIndia,
-    model_india_4factor_10y_MSCIIndia,
-    model_india_5factor_10y_MSCIIndia
-  ),
-  include.ci = FALSE, 
-  caption = "India versus MSCI India, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_5y_MSCIIndia,
-    model_india_3factor_5y_MSCIIndia,
-    model_india_4factor_5y_MSCIIndia,
-    model_india_5factor_5y_MSCIIndia
-  ),
-  include.ci = FALSE, 
-  caption = "India versus MSCI India, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_3y_MSCIIndia,
-    model_india_3factor_3y_MSCIIndia,
-    model_india_4factor_3y_MSCIIndia,
-    model_india_5factor_3y_MSCIIndia
-  ),
-  include.ci = FALSE, 
-  caption = "India versus MSCI India, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_10y_SPBSE500India,
-    model_india_3factor_10y_SPBSE500India,
-    model_india_4factor_10y_SPBSE500India,
-    model_india_5factor_10y_SPBSE500India
-  ),
-  include.ci = FALSE, 
-  caption = "India versus S&P BSE 500 India, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_5y_SPBSE500India,
-    model_india_3factor_5y_SPBSE500India,
-    model_india_4factor_5y_SPBSE500India,
-    model_india_5factor_5y_SPBSE500India
-  ),
-  include.ci = FALSE, 
-  caption = "India versus S&P BSE 500 India, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_1factor_3y_SPBSE500India,
-    model_india_3factor_3y_SPBSE500India,
-    model_india_4factor_3y_SPBSE500India,
-    model_india_5factor_3y_SPBSE500India
-  ),
-  include.ci = FALSE, 
-  caption = "India versus S&P BSE 500 India, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
 
 #### Asia Emerging Markets
 
@@ -909,161 +455,6 @@ model_asiaemerg_3factor_3y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStat
 model_asiaemerg_4factor_3y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
 model_asiaemerg_5factor_3y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(AsiaEmerg_Panel, date1 > as.Date("2017-01-01")))
 
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_10y_FF,
-    model_asiaemerg_3factor_10y_FF,
-    model_asiaemerg_4factor_10y_FF,
-    model_asiaemerg_5factor_10y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus Fama French EM Benchmark, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_5y_FF,
-    model_asiaemerg_3factor_5y_FF,
-    model_asiaemerg_4factor_5y_FF,
-    model_asiaemerg_5factor_5y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus Fama French EM Benchmark, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_3y_FF,
-    model_asiaemerg_3factor_3y_FF,
-    model_asiaemerg_4factor_3y_FF,
-    model_asiaemerg_5factor_3y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus Fama French EM Benchmark, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_10y_MSCIEMAsia1040,
-    model_asiaemerg_3factor_10y_MSCIEMAsia1040,
-    model_asiaemerg_4factor_10y_MSCIEMAsia1040,
-    model_asiaemerg_5factor_10y_MSCIEMAsia1040
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_5y_MSCIEMAsia1040,
-    model_asiaemerg_3factor_5y_MSCIEMAsia1040,
-    model_asiaemerg_4factor_5y_MSCIEMAsia1040,
-    model_asiaemerg_5factor_5y_MSCIEMAsia1040
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_3y_MSCIEMAsia1040,
-    model_asiaemerg_3factor_3y_MSCIEMAsia1040,
-    model_asiaemerg_4factor_3y_MSCIEMAsia1040,
-    model_asiaemerg_5factor_3y_MSCIEMAsia1040
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_10y_MSCIEMAsia,
-    model_asiaemerg_3factor_10y_MSCIEMAsia,
-    model_asiaemerg_4factor_10y_MSCIEMAsia,
-    model_asiaemerg_5factor_10y_MSCIEMAsia
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus MSCI Asia EM, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_5y_MSCIEMAsia,
-    model_asiaemerg_3factor_5y_MSCIEMAsia,
-    model_asiaemerg_4factor_5y_MSCIEMAsia,
-    model_asiaemerg_5factor_5y_MSCIEMAsia
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus MSCI Asia EM, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_3y_MSCIEMAsia,
-    model_asiaemerg_3factor_3y_MSCIEMAsia,
-    model_asiaemerg_4factor_3y_MSCIEMAsia,
-    model_asiaemerg_5factor_3y_MSCIEMAsia
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus MSCI Asia EM, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_10y_CSIStateownedEnterprisesComp,
-    model_asiaemerg_3factor_10y_CSIStateownedEnterprisesComp,
-    model_asiaemerg_4factor_10y_CSIStateownedEnterprisesComp,
-    model_asiaemerg_5factor_10y_CSIStateownedEnterprisesComp
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_5y_CSIStateownedEnterprisesComp,
-    model_asiaemerg_3factor_5y_CSIStateownedEnterprisesComp,
-    model_asiaemerg_4factor_5y_CSIStateownedEnterprisesComp,
-    model_asiaemerg_5factor_5y_CSIStateownedEnterprisesComp
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2015-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiaemerg_1factor_3y_CSIStateownedEnterprisesComp,
-    model_asiaemerg_3factor_3y_CSIStateownedEnterprisesComp,
-    model_asiaemerg_4factor_3y_CSIStateownedEnterprisesComp,
-    model_asiaemerg_5factor_3y_CSIStateownedEnterprisesComp
-  ),
-  include.ci = FALSE, 
-  caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2017-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
 
 ##### Regressions for Cap-Style Categorization
 
@@ -1099,57 +490,6 @@ model_india_mid_3factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF
 model_india_mid_4factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + WML, data = India_Mid_Panel)
 model_india_mid_5factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = India_Mid_Panel)
 
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_mid_1factor_10y_FF,
-    model_india_mid_3factor_10y_FF,
-    model_india_mid_4factor_10y_FF,
-    model_india_mid_5factor_10y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "Indian Mid Cap Funds versus Fama French Benchmark, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_mid_1factor_10y_MSCIIndiaMid,
-    model_india_mid_3factor_10y_MSCIIndiaMid,
-    model_india_mid_4factor_10y_MSCIIndiaMid,
-    model_india_mid_5factor_10y_MSCIIndiaMid
-  ),
-  include.ci = FALSE, 
-  caption = "Indian Mid Cap Funds versus MSCI India Mid Cap, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_mid_1factor_10y_IISLNiftyMidcap150,
-    model_india_mid_3factor_10y_IISLNiftyMidcap150,
-    model_india_mid_4factor_10y_IISLNiftyMidcap150,
-    model_india_mid_5factor_10y_IISLNiftyMidcap150
-  ),
-  include.ci = FALSE, 
-  caption = "Indian Mid Cap Funds versus Nifty Mid Cap 150, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_mid_1factor_10y_SPBSE500India,
-    model_india_mid_3factor_10y_SPBSE500India,
-    model_india_mid_4factor_10y_SPBSE500India,
-    model_india_mid_5factor_10y_SPBSE500India
-  ),
-  include.ci = FALSE, 
-  caption = "Indian Mid Cap Funds versus S&P BSE 500 India, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
 
 #' India Small Cap
 
@@ -1182,57 +522,6 @@ model_india_small_3factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.
 model_india_small_4factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + WML, data = India_Small_Panel)
 model_india_small_5factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = India_Small_Panel)
 
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_small_1factor_10y_FF,
-    model_india_small_3factor_10y_FF,
-    model_india_small_4factor_10y_FF,
-    model_india_small_5factor_10y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "Indian Small Cap Funds versus Fama French Benchmark, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_small_1factor_10y_MSCIIndiaSmall,
-    model_india_small_3factor_10y_MSCIIndiaSmall,
-    model_india_small_4factor_10y_MSCIIndiaSmall,
-    model_india_small_5factor_10y_MSCIIndiaSmall
-  ),
-  include.ci = FALSE, 
-  caption = "Indian Small Cap Funds versus MSCI India Small Cap, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_small_1factor_10y_IISLNiftySmallcap250,
-    model_india_small_3factor_10y_IISLNiftySmallcap250,
-    model_india_small_4factor_10y_IISLNiftySmallcap250,
-    model_india_small_5factor_10y_IISLNiftySmallcap250
-  ),
-  include.ci = FALSE, 
-  caption = "Indian Small Cap Funds versus Nifty Small Cap 250, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_india_small_1factor_10y_SPBSE500India,
-    model_india_small_3factor_10y_SPBSE500India,
-    model_india_small_4factor_10y_SPBSE500India,
-    model_india_small_5factor_10y_SPBSE500India
-  ),
-  include.ci = FALSE, 
-  caption = "Indian Small Cap Funds versus S&P BSE 500 India, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
 
 
 #' China Mid Cap
@@ -1266,57 +555,6 @@ model_china_mid_3factor_10y_CSIStateownedEnterprises <- lm(Funds.RF ~ CSIStateow
 model_china_mid_4factor_10y_CSIStateownedEnterprises <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = China_Mid_Panel)
 model_china_mid_5factor_10y_CSIStateownedEnterprises <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = China_Mid_Panel)
 
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_mid_1factor_10y_FF,
-    model_china_mid_3factor_10y_FF,
-    model_china_mid_4factor_10y_FF,
-    model_china_mid_5factor_10y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Mid Cap Funds versus Fama French Benchmark, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_mid_1factor_10y_CSI200,
-    model_china_mid_3factor_10y_CSI200,
-    model_china_mid_4factor_10y_CSI200,
-    model_china_mid_5factor_10y_CSI200
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Mid Cap Funds versus CSI 200 Mid Cap, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_mid_1factor_10y_MSCIChinaMid,
-    model_china_mid_3factor_10y_MSCIChinaMid,
-    model_china_mid_4factor_10y_MSCIChinaMid,
-    model_china_mid_5factor_10y_MSCIChinaMid
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Mid Cap Funds versus MSCI China Mid Cap, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_china_mid_1factor_10y_CSIStateownedEnterprises,
-    model_china_mid_3factor_10y_CSIStateownedEnterprises,
-    model_china_mid_4factor_10y_CSIStateownedEnterprises,
-    model_china_mid_5factor_10y_CSIStateownedEnterprises
-  ),
-  include.ci = FALSE, 
-  caption = "Chinese Mid Cap Funds versus CSI Stateowned Enterprises, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
 
 
 #' Asia Pacific Mid Cap
@@ -1345,44 +583,6 @@ model_asiapacexjpn_mid_3factor_10y_MSCIACAsiaPacExJPN <- lm(Funds.RF ~ MSCIACAsi
 model_asiapacexjpn_mid_4factor_10y_MSCIACAsiaPacExJPN <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + WML, data = AsiaPacific_Mid_Panel)
 model_asiapacexjpn_mid_5factor_10y_MSCIACAsiaPacExJPN <- lm(Funds.RF ~ MSCIACAsiaPacExJPNNRUSD.RF + SMB + HML + RMW + CMA, data = AsiaPacific_Mid_Panel)
 
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiapacexjpn_mid_1factor_10y_FF,
-    model_asiapacexjpn_mid_3factor_10y_FF,
-    model_asiapacexjpn_mid_4factor_10y_FF,
-    model_asiapacexjpn_mid_5factor_10y_FF
-  ),
-  include.ci = FALSE, 
-  caption = "AsiaPac ex Japan Funds versus Fama French Benchmark, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiapacexjpn_mid_1factor_10y_MSCIACAsiaPacificExJapanMid,
-    model_asiapacexjpn_mid_3factor_10y_MSCIACAsiaPacificExJapanMid,
-    model_asiapacexjpn_mid_4factor_10y_MSCIACAsiaPacificExJapanMid,
-    model_asiapacexjpn_mid_5factor_10y_MSCIACAsiaPacificExJapanMid
-  ),
-  include.ci = FALSE, 
-  caption = "AsiaPac ex Japan Funds versus MSCI AC AsiaPac ex Japan Mid Cap, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_asiapacexjpn_mid_1factor_10y_MSCIACAsiaPacExJPN,
-    model_asiapacexjpn_mid_3factor_10y_MSCIACAsiaPacExJPN,
-    model_asiapacexjpn_mid_4factor_10y_MSCIACAsiaPacExJPN,
-    model_asiapacexjpn_mid_5factor_10y_MSCIACAsiaPacExJPN
-  ),
-  include.ci = FALSE, 
-  caption = "AsiaPac ex Japan Funds versus MSCI AC AsiaPac ex Japan, 2010-2019",
-  doctype = FALSE,
-  caption.above = TRUE)
 
 ##### One Regression per fund
 
@@ -1464,19 +664,6 @@ model_alphas_china_age <- lm(estimate ~ Age, data = China_Panel_Ind)
 model_alphas_china_size <- lm(estimate ~ LNSize, data = China_Panel_Ind)
 model_alphas_china_expenseratio <- lm(estimate ~ `Annual Report Net Expense Ratio Year2019`, data = China_Panel_Ind)
 model_alphas_china_all <- lm(estimate ~ Age + LNSize + `Annual Report Net Expense Ratio Year2019`, data = China_Panel_Ind)
-
-#+ results='asis'
-htmlreg(
-  list(
-    model_alphas_china_age,
-    model_alphas_china_size,
-    model_alphas_china_expenseratio,
-    model_alphas_china_all
-  ),
-  include.ci = FALSE, 
-  caption = "Influences of Chinese Fund Characteristics on their Alphas",
-  doctype = FALSE,
-  caption.above = TRUE)
 
 
 
@@ -1686,21 +873,7 @@ model_ols_ANALYST <- lm(estimate ~ ANALYSTFUND, data = HOLDINGS_REGRESSION)
 model_ols_INSTI <- lm(estimate ~ INSTIFUND, data = HOLDINGS_REGRESSION)
 model_ols_full <- lm(estimate ~ SOEWeight + ANALYSTFUND + INSTIFUND, data = HOLDINGS_REGRESSION)
 
-#+ results='asis'
-htmlreg(
-  list(
-    model_ols_SOE ,
-    model_ols_ANALYST ,
-    model_ols_INSTI ,
-    model_ols_full
-  ),
-  include.ci = FALSE, 
-  caption = "Influences of Chinese Fund Holdings on their Alphas",
-  doctype = FALSE,
-  caption.above = TRUE)
 
-
-view(HOLDINGS_REGRESSION)
 
 HOLDINGS_REGRESSION %>% 
   ggplot(aes(x = SOEWeight, y = estimate)) +
@@ -1722,3 +895,866 @@ coeftest(model_probit_SOE, vcov. = vcovHC, type = "HC1")
 coeftest(model_probit_ANALYST,  vcov. = vcovHC, type = "HC1")
 coeftest(model_probit_INSTI, vcov. = vcovHC, type = "HC1")
 coeftest(model_probit_full, vcov. = vcovHC, type = "HC1")
+
+
+##### China All Caps
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_10y_FF,
+    model_china_3factor_10y_FF,
+    model_china_4factor_10y_FF,
+    model_china_5factor_10y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus Fama French EM Benchmark 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_china_1factor_5y_FF,
+    model_china_3factor_5y_FF,
+    model_china_4factor_5y_FF,
+    model_china_5factor_5y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus Fama French EM Benchmark 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_china_1factor_3y_FF,
+    model_china_3factor_3y_FF,
+    model_china_4factor_3y_FF,
+    model_china_5factor_3y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus Fama French EM Benchmark 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_10y_CSI300,
+    model_china_3factor_10y_CSI300,
+    model_china_4factor_10y_CSI300,
+    model_china_5factor_10y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI 300, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_5y_CSI300,
+    model_china_3factor_5y_CSI300,
+    model_china_4factor_5y_CSI300,
+    model_china_5factor_5y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI 300, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_3y_CSI300,
+    model_china_3factor_3y_CSI300,
+    model_china_4factor_3y_CSI300,
+    model_china_5factor_3y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI 300, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_10y_MSCIChina,
+    model_china_3factor_10y_MSCIChina,
+    model_china_4factor_10y_MSCIChina,
+    model_china_5factor_10y_MSCIChina 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus MSCI China, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_5y_MSCIChina,
+    model_china_3factor_5y_MSCIChina,
+    model_china_4factor_5y_MSCIChina,
+    model_china_5factor_5y_MSCIChina 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus MSCI China, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_3y_MSCIChina,
+    model_china_3factor_3y_MSCIChina,
+    model_china_4factor_3y_MSCIChina,
+    model_china_5factor_3y_MSCIChina 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus MSCI China, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_10y_CSISOE,
+    model_china_3factor_10y_CSISOE,
+    model_china_4factor_10y_CSISOE,
+    model_china_5factor_10y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_10y_CSISOE,
+    model_china_3factor_10y_CSISOE,
+    model_china_4factor_10y_CSISOE,
+    model_china_5factor_10y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_1factor_3y_CSISOE,
+    model_china_3factor_3y_CSISOE,
+    model_china_4factor_3y_CSISOE,
+    model_china_5factor_3y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Funds versus CSI Stateowned Enterprises Comp, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+##### Asia Pacific ex Japan All Caps
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_10y_FF,
+    model_asiapacexjpn_3factor_10y_FF,
+    model_asiapacexjpn_4factor_10y_FF,
+    model_asiapacexjpn_5factor_10y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_5y_FF,
+    model_asiapacexjpn_3factor_5y_FF,
+    model_asiapacexjpn_4factor_5y_FF,
+    model_asiapacexjpn_5factor_5y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_3y_FF,
+    model_asiapacexjpn_3factor_3y_FF,
+    model_asiapacexjpn_4factor_3y_FF,
+    model_asiapacexjpn_5factor_3y_FF 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus Fama French EM Benchmark, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_10y_CSI300,
+    model_asiapacexjpn_3factor_10y_CSI300,
+    model_asiapacexjpn_4factor_10y_CSI300,
+    model_asiapacexjpn_5factor_10y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus CSI 300, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_5y_CSI300,
+    model_asiapacexjpn_3factor_5y_CSI300,
+    model_asiapacexjpn_4factor_5y_CSI300,
+    model_asiapacexjpn_5factor_5y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus CSI 300, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_3y_CSI300,
+    model_asiapacexjpn_3factor_3y_CSI300,
+    model_asiapacexjpn_4factor_3y_CSI300,
+    model_asiapacexjpn_5factor_3y_CSI300 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus CSI 300, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_10y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_3factor_10y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_4factor_10y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_5factor_10y_MSCIAsiaPacExJpn 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_5y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_3factor_5y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_4factor_5y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_5factor_5y_MSCIAsiaPacExJpn 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_3y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_3factor_3y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_4factor_3y_MSCIAsiaPacExJpn,
+    model_asiapacexjpn_5factor_3y_MSCIAsiaPacExJpn 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan versus MSCI Asia Pacific ex Japan, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_10y_CSISOE,
+    model_asiapacexjpn_3factor_10y_CSISOE,
+    model_asiapacexjpn_4factor_10y_CSISOE,
+    model_asiapacexjpn_5factor_10y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_5y_CSISOE,
+    model_asiapacexjpn_3factor_5y_CSISOE,
+    model_asiapacexjpn_4factor_5y_CSISOE,
+    model_asiapacexjpn_5factor_5y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+htmlreg(
+  list(
+    model_asiapacexjpn_1factor_3y_CSISOE,
+    model_asiapacexjpn_3factor_3y_CSISOE,
+    model_asiapacexjpn_4factor_3y_CSISOE,
+    model_asiapacexjpn_5factor_3y_CSISOE 
+  ),
+  include.ci = FALSE, 
+  caption = "Asian Pacfic ex Japan Funds versus CSI Stateowned Enterprises Comp, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
+#### India All Caps
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_10y_FF,
+    model_india_3factor_10y_FF,
+    model_india_4factor_10y_FF,
+    model_india_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Fama French EM Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_5y_FF,
+    model_india_3factor_5y_FF,
+    model_india_4factor_5y_FF,
+    model_india_5factor_5y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Fama French EM Benchmark, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_3y_FF,
+    model_india_3factor_3y_FF,
+    model_india_4factor_3y_FF,
+    model_india_5factor_3y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Fama French EM Benchmark, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_10y_IISLNifty50,
+    model_india_3factor_10y_IISLNifty50,
+    model_india_4factor_10y_IISLNifty50,
+    model_india_5factor_10y_IISLNifty50
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Nifty 50, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_5y_IISLNifty50,
+    model_india_3factor_5y_IISLNifty50,
+    model_india_4factor_5y_IISLNifty50,
+    model_india_5factor_5y_IISLNifty50
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Nifty 50, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_3y_IISLNifty50,
+    model_india_3factor_3y_IISLNifty50,
+    model_india_4factor_3y_IISLNifty50,
+    model_india_5factor_3y_IISLNifty50
+  ),
+  include.ci = FALSE, 
+  caption = "India versus Nifty 50, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_10y_MSCIIndia,
+    model_india_3factor_10y_MSCIIndia,
+    model_india_4factor_10y_MSCIIndia,
+    model_india_5factor_10y_MSCIIndia
+  ),
+  include.ci = FALSE, 
+  caption = "India versus MSCI India, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_5y_MSCIIndia,
+    model_india_3factor_5y_MSCIIndia,
+    model_india_4factor_5y_MSCIIndia,
+    model_india_5factor_5y_MSCIIndia
+  ),
+  include.ci = FALSE, 
+  caption = "India versus MSCI India, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_3y_MSCIIndia,
+    model_india_3factor_3y_MSCIIndia,
+    model_india_4factor_3y_MSCIIndia,
+    model_india_5factor_3y_MSCIIndia
+  ),
+  include.ci = FALSE, 
+  caption = "India versus MSCI India, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_10y_SPBSE500India,
+    model_india_3factor_10y_SPBSE500India,
+    model_india_4factor_10y_SPBSE500India,
+    model_india_5factor_10y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "India versus S&P BSE 500 India, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_5y_SPBSE500India,
+    model_india_3factor_5y_SPBSE500India,
+    model_india_4factor_5y_SPBSE500India,
+    model_india_5factor_5y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "India versus S&P BSE 500 India, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_1factor_3y_SPBSE500India,
+    model_india_3factor_3y_SPBSE500India,
+    model_india_4factor_3y_SPBSE500India,
+    model_india_5factor_3y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "India versus S&P BSE 500 India, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
+
+#### Asia EM All Caps
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_10y_FF,
+    model_asiaemerg_3factor_10y_FF,
+    model_asiaemerg_4factor_10y_FF,
+    model_asiaemerg_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus Fama French EM Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_5y_FF,
+    model_asiaemerg_3factor_5y_FF,
+    model_asiaemerg_4factor_5y_FF,
+    model_asiaemerg_5factor_5y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus Fama French EM Benchmark, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_3y_FF,
+    model_asiaemerg_3factor_3y_FF,
+    model_asiaemerg_4factor_3y_FF,
+    model_asiaemerg_5factor_3y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus Fama French EM Benchmark, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_10y_MSCIEMAsia1040,
+    model_asiaemerg_3factor_10y_MSCIEMAsia1040,
+    model_asiaemerg_4factor_10y_MSCIEMAsia1040,
+    model_asiaemerg_5factor_10y_MSCIEMAsia1040
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_5y_MSCIEMAsia1040,
+    model_asiaemerg_3factor_5y_MSCIEMAsia1040,
+    model_asiaemerg_4factor_5y_MSCIEMAsia1040,
+    model_asiaemerg_5factor_5y_MSCIEMAsia1040
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_3y_MSCIEMAsia1040,
+    model_asiaemerg_3factor_3y_MSCIEMAsia1040,
+    model_asiaemerg_4factor_3y_MSCIEMAsia1040,
+    model_asiaemerg_5factor_3y_MSCIEMAsia1040
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM 1040, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_10y_MSCIEMAsia,
+    model_asiaemerg_3factor_10y_MSCIEMAsia,
+    model_asiaemerg_4factor_10y_MSCIEMAsia,
+    model_asiaemerg_5factor_10y_MSCIEMAsia
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_5y_MSCIEMAsia,
+    model_asiaemerg_3factor_5y_MSCIEMAsia,
+    model_asiaemerg_4factor_5y_MSCIEMAsia,
+    model_asiaemerg_5factor_5y_MSCIEMAsia
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_3y_MSCIEMAsia,
+    model_asiaemerg_3factor_3y_MSCIEMAsia,
+    model_asiaemerg_4factor_3y_MSCIEMAsia,
+    model_asiaemerg_5factor_3y_MSCIEMAsia
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus MSCI Asia EM, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_10y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_3factor_10y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_4factor_10y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_5factor_10y_CSIStateownedEnterprisesComp
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_5y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_3factor_5y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_4factor_5y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_5factor_5y_CSIStateownedEnterprisesComp
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2015-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiaemerg_1factor_3y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_3factor_3y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_4factor_3y_CSIStateownedEnterprisesComp,
+    model_asiaemerg_5factor_3y_CSIStateownedEnterprisesComp
+  ),
+  include.ci = FALSE, 
+  caption = "Emerging Markets in Asia versus CSI Stateowned Enterprises Comp, 2017-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
+#### India Mid Cap
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_mid_1factor_10y_FF,
+    model_india_mid_3factor_10y_FF,
+    model_india_mid_4factor_10y_FF,
+    model_india_mid_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Mid Cap Funds versus Fama French Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_mid_1factor_10y_MSCIIndiaMid,
+    model_india_mid_3factor_10y_MSCIIndiaMid,
+    model_india_mid_4factor_10y_MSCIIndiaMid,
+    model_india_mid_5factor_10y_MSCIIndiaMid
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Mid Cap Funds versus MSCI India Mid Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_mid_1factor_10y_IISLNiftyMidcap150,
+    model_india_mid_3factor_10y_IISLNiftyMidcap150,
+    model_india_mid_4factor_10y_IISLNiftyMidcap150,
+    model_india_mid_5factor_10y_IISLNiftyMidcap150
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Mid Cap Funds versus Nifty Mid Cap 150, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_mid_1factor_10y_SPBSE500India,
+    model_india_mid_3factor_10y_SPBSE500India,
+    model_india_mid_4factor_10y_SPBSE500India,
+    model_india_mid_5factor_10y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Mid Cap Funds versus S&P BSE 500 India, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#### India Small Caps
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_small_1factor_10y_FF,
+    model_india_small_3factor_10y_FF,
+    model_india_small_4factor_10y_FF,
+    model_india_small_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Small Cap Funds versus Fama French Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_small_1factor_10y_MSCIIndiaSmall,
+    model_india_small_3factor_10y_MSCIIndiaSmall,
+    model_india_small_4factor_10y_MSCIIndiaSmall,
+    model_india_small_5factor_10y_MSCIIndiaSmall
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Small Cap Funds versus MSCI India Small Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_small_1factor_10y_IISLNiftySmallcap250,
+    model_india_small_3factor_10y_IISLNiftySmallcap250,
+    model_india_small_4factor_10y_IISLNiftySmallcap250,
+    model_india_small_5factor_10y_IISLNiftySmallcap250
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Small Cap Funds versus Nifty Small Cap 250, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_india_small_1factor_10y_SPBSE500India,
+    model_india_small_3factor_10y_SPBSE500India,
+    model_india_small_4factor_10y_SPBSE500India,
+    model_india_small_5factor_10y_SPBSE500India
+  ),
+  include.ci = FALSE, 
+  caption = "Indian Small Cap Funds versus S&P BSE 500 India, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#### China Mid Cap
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_mid_1factor_10y_FF,
+    model_china_mid_3factor_10y_FF,
+    model_china_mid_4factor_10y_FF,
+    model_china_mid_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Mid Cap Funds versus Fama French Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_mid_1factor_10y_CSI200,
+    model_china_mid_3factor_10y_CSI200,
+    model_china_mid_4factor_10y_CSI200,
+    model_china_mid_5factor_10y_CSI200
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Mid Cap Funds versus CSI 200 Mid Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_mid_1factor_10y_MSCIChinaMid,
+    model_china_mid_3factor_10y_MSCIChinaMid,
+    model_china_mid_4factor_10y_MSCIChinaMid,
+    model_china_mid_5factor_10y_MSCIChinaMid
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Mid Cap Funds versus MSCI China Mid Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_china_mid_1factor_10y_CSIStateownedEnterprises,
+    model_china_mid_3factor_10y_CSIStateownedEnterprises,
+    model_china_mid_4factor_10y_CSIStateownedEnterprises,
+    model_china_mid_5factor_10y_CSIStateownedEnterprises
+  ),
+  include.ci = FALSE, 
+  caption = "Chinese Mid Cap Funds versus CSI Stateowned Enterprises, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+
+#### Asia Pac ex Japan Mid Cap
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_mid_1factor_10y_FF,
+    model_asiapacexjpn_mid_3factor_10y_FF,
+    model_asiapacexjpn_mid_4factor_10y_FF,
+    model_asiapacexjpn_mid_5factor_10y_FF
+  ),
+  include.ci = FALSE, 
+  caption = "AsiaPac ex Japan Funds versus Fama French Benchmark, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_mid_1factor_10y_MSCIACAsiaPacificExJapanMid,
+    model_asiapacexjpn_mid_3factor_10y_MSCIACAsiaPacificExJapanMid,
+    model_asiapacexjpn_mid_4factor_10y_MSCIACAsiaPacificExJapanMid,
+    model_asiapacexjpn_mid_5factor_10y_MSCIACAsiaPacificExJapanMid
+  ),
+  include.ci = FALSE, 
+  caption = "AsiaPac ex Japan Funds versus MSCI AC AsiaPac ex Japan Mid Cap, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_asiapacexjpn_mid_1factor_10y_MSCIACAsiaPacExJPN,
+    model_asiapacexjpn_mid_3factor_10y_MSCIACAsiaPacExJPN,
+    model_asiapacexjpn_mid_4factor_10y_MSCIACAsiaPacExJPN,
+    model_asiapacexjpn_mid_5factor_10y_MSCIACAsiaPacExJPN
+  ),
+  include.ci = FALSE, 
+  caption = "AsiaPac ex Japan Funds versus MSCI AC AsiaPac ex Japan, 2010-2019",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#### Alpas on Stock Characteristics
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_alphas_china_age,
+    model_alphas_china_size,
+    model_alphas_china_expenseratio,
+    model_alphas_china_all
+  ),
+  include.ci = FALSE, 
+  caption = "Influences of Chinese Fund Characteristics on their Alphas",
+  doctype = FALSE,
+  caption.above = TRUE)
+
+#### Alphas on Stock Characteristics
+
+model_ols_full_test <- lm(estimate ~ SOEWeight + ANALYSTFUND + INSTIFUND, data = HOLDINGS_REGRESSION)
+
+#+ results='asis'
+htmlreg(
+  list(
+    model_ols_SOE ,
+    model_ols_ANALYST ,
+    model_ols_INSTI ,
+    model_ols_full
+  ),
+  include.ci = FALSE, 
+  caption = "Influences of Chinese Fund Holdings on their Alphas",
+  doctype = FALSE,
+  caption.above = TRUE)
