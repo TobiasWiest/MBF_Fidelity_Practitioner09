@@ -747,6 +747,7 @@ Factor_Chart %>%
   geom_line(size=1)
 
 Benchmark_Chart <- Benchmarks_Factors %>%
+  filter(date1 > as.Date("2010-02-28")) %>% 
   mutate(ChinaSOE = cumprod(1+(CSIStateownedEnterprisesCompPRCNY/100))-1) %>%
   mutate(China = cumprod(1+(CSI300NRUSD/100))-1) %>%
   mutate(EM = cumprod(1+(MSCIEMAsiaNRUSD/100))-1) %>%
