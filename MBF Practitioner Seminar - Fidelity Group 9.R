@@ -6,9 +6,18 @@ library(texreg)
 library(lme4)
 library(broom)
 library(zoo)
+library(htmlTable)
 
 Full_Equity_Sample <- read_excel("Full Equity Sample.xlsx")
 
+############################################################################
+############################################################################
+###                                                                      ###
+###                                                                      ###
+###                        Transforming into long                        ###
+###                                                                      ###
+############################################################################
+############################################################################
 
 Full_Equity_Sample$FundID <- seq.int(nrow(Full_Equity_Sample))
 
@@ -162,9 +171,16 @@ Benchmarks <- Benchmarks %>%
 Benchmarks_Factors <- Emerging_Factors %>% 
     left_join(Benchmarks, by = "date1") 
 
-##### Pooled OLS MultiFactor Regressions 
+############################################################################
+############################################################################
+###                                                                      ###
+###                                                                      ###
+###                       Pooled OLS Regressions                         ###
+###                                                                      ###
+############################################################################
+############################################################################
 
-#### China 
+##### China 
 
 China_Panel <- China_Panel %>% 
   left_join(Benchmarks_Factors, by = "date1") 
@@ -237,7 +253,7 @@ model_china_4factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY
 model_china_5factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(China_Panel, date1 > as.Date("2017-01-01")))
 
 
-#### Asia Pacific ex Japan Factor Models
+#### Asia Pacific ex Japan 
 
 AsiaPacific_Panel <- AsiaPacific_Panel %>% 
   left_join(Benchmarks_Factors, by = "date1") 
@@ -308,8 +324,6 @@ model_asiapacexjpn_1factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCo
 model_asiapacexjpn_3factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
 model_asiapacexjpn_4factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + WML, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
 model_asiapacexjpn_5factor_3y_CSISOE <- lm(Funds.RF ~ CSIStateownedEnterprisesCompPRCNY.RF + SMB + HML + RMW + CMA, data = subset(AsiaPacific_Panel, date1 > as.Date("2017-01-01")))
-
-
 
 
 #### India
@@ -458,7 +472,7 @@ model_asiaemerg_5factor_3y_CSIStateownedEnterprisesComp <- lm(Funds.RF ~ CSIStat
 
 ##### Regressions for Cap-Style Categorization
 
-#' India Mid Cap
+##### India Mid Cap
 
 India_Mid_Panel <- India_Mid_Panel %>% 
   left_join(Benchmarks_Factors, by = "date1") 
@@ -491,7 +505,7 @@ model_india_mid_4factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF
 model_india_mid_5factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = India_Mid_Panel)
 
 
-#' India Small Cap
+##### India Small Cap
 
 India_Small_Panel <- India_Small_Panel %>% 
   left_join(Benchmarks_Factors, by = "date1") 
@@ -523,8 +537,7 @@ model_india_small_4factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.
 model_india_small_5factor_10y_SPBSE500India <- lm(Funds.RF ~ SPBSE500IndiaTRINR.RF + SMB + HML + RMW + CMA, data = India_Small_Panel)
 
 
-
-#' China Mid Cap
+##### China Mid Cap
 
 China_Mid_Panel <- China_Mid_Panel %>% 
   left_join(Benchmarks_Factors, by = "date1") 
@@ -664,7 +677,6 @@ model_alphas_china_age <- lm(estimate ~ Age, data = China_Panel_Ind)
 model_alphas_china_size <- lm(estimate ~ LNSize, data = China_Panel_Ind)
 model_alphas_china_expenseratio <- lm(estimate ~ `Annual Report Net Expense Ratio Year2019`, data = China_Panel_Ind)
 model_alphas_china_all <- lm(estimate ~ Age + LNSize + `Annual Report Net Expense Ratio Year2019`, data = China_Panel_Ind)
-
 
 
 #### Descriptive Statistics
@@ -897,12 +909,6 @@ HOLDINGS_REGRESSION %>%
   geom_point(aes(x = INSTIFUND, y = estimate)) +
   geom_smooth(method = "lm")
 
-library(AER)
-coeftest(model_probit_SOE, vcov. = vcovHC, type = "HC1")
-coeftest(model_probit_ANALYST,  vcov. = vcovHC, type = "HC1")
-coeftest(model_probit_INSTI, vcov. = vcovHC, type = "HC1")
-coeftest(model_probit_full, vcov. = vcovHC, type = "HC1")
-
 
 
 #### CSI 300 vs MSCI CHINA
@@ -934,13 +940,40 @@ CSI300 <- CSI300 %>%
   select(identifier, SOEWeight, ANALYSTFUND, INSTIFUND, Quarter) %>% 
   mutate(TOP = 2)
 
+MSCICHINA <- read_excel("MSCICHINA.xlsx")
+
+MSCICHINA <- MSCICHINA %>%   
+  mutate(date1 = as.Date(Date, format = "%m/%d/%Y")) %>% 
+  arrange(date1, RIC) %>% 
+  filter(RIC != "NA")
+
+MSCICHINA <- MSCICHINA %>%
+  mutate(Quarter = as.yearqtr(date1)) %>% 
+  inner_join(HOLDING_FULL, by = c("RIC", "Quarter")) %>% 
+  inner_join(SECTORSOE, by = "RIC")
+
+MSCICHINA <- MSCICHINA %>% 
+  group_by(date1) %>% 
+  mutate(ScaledWeights = Weight/sum(Weight))  %>% 
+  mutate(ANALYSTCONTR = ScaledWeights * as.numeric(NumberAnalyst)) %>% 
+  mutate(INSTICONTR = ScaledWeights * as.numeric(INSTOWN)) %>% 
+  mutate(SOEDummy = if_else(SOE == "Sovereign" | SOE == "Regional", 1, 0)) %>% 
+  mutate(SOEWeight= sum(SOEDummy*ScaledWeights, na.rm = TRUE)) %>% 
+  mutate(ANALYSTFUND = sum(ANALYSTCONTR, na.rm = TRUE)) %>% 
+  mutate(INSTIFUND = sum(INSTICONTR, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  distinct(date1, .keep_all = TRUE) %>% 
+  mutate(identifier = "MSCICHINA") %>% 
+  select(identifier, SOEWeight, ANALYSTFUND, INSTIFUND, Quarter) %>% 
+  mutate(TOP = 3)
+
 FUNDS <- HOLDINGS_REGRESSION %>% 
   distinct(ISIN, Quarter, .keep_all = TRUE) %>% 
   rename(identifier = ISIN) %>% 
   select(identifier, SOEWeight, ANALYSTFUND, INSTIFUND, Quarter, TOP) %>% 
-  ungroup()
-
-IndexDistortion <- do.call(rbind, list(FUNDS, CSI300))
+  ungroup() 
+view(FUNDS)
+IndexDistortion <- do.call(rbind, list(FUNDS, CSI300, MSCICHINA))
 IndexDistortion %>% 
   ggplot(aes(x = Quarter, y = ANALYSTFUND, color = identifier)) +
   geom_line(aes(x = Quarter, y = ANALYSTFUND))
@@ -948,23 +981,27 @@ IndexDistortion %>%
 IndexDistortion <- IndexDistortion %>% 
   group_by(Quarter, TOP) %>% 
   mutate(meanSOE = mean(SOEWeight, na.ra = TRUE)) %>% 
-  mutate(meanANALSYST = mean(ANALYSTFUND, na.ra = TRUE)) %>%  
+  mutate(meanANALYST = mean(ANALYSTFUND, na.ra = TRUE)) %>%  
   mutate(meanINTI = mean(INSTIFUND, na.ra = TRUE)) %>% 
   ungroup() %>% 
   distinct(Quarter, TOP, .keep_all = TRUE) %>% 
-  mutate(Class = if_else(TOP == 1, "TOP", if_else(TOP == 2, "WORST", "CSI300")))
+  mutate(Class = if_else(TOP == 1, "TOP", if_else(TOP == 0, "WORST", if_else(TOP == 3, "MSCICHINA", "CSI300"))))
 
 IndexDistortion %>% 
+  filter(Quarter > as.yearqtr(as.Date("31-12-2017", format = "%d-%m-%Y"))) %>% 
   ggplot(aes(x = Quarter, y = meanSOE, color = Class)) +
   geom_line(aes(x = Quarter, y = meanSOE))
 
 IndexDistortion %>% 
+  filter(Quarter > as.yearqtr(as.Date("31-12-2017", format = "%d-%m-%Y"))) %>% 
   ggplot(aes(x = Quarter, y = meanINTI, color = Class)) +
   geom_line(aes(x = Quarter, y = meanINTI))
 
 IndexDistortion %>% 
-  ggplot(aes(x = Quarter, y = meanSOE, color = Class)) +
-  geom_line(aes(x = Quarter, y = meanSOE))
+  filter(Quarter > as.yearqtr(as.Date("31-12-2017", format = "%d-%m-%Y"))) %>% 
+  ggplot(aes(x = Quarter, y = meanANALYST, color = Class)) +
+  geom_line(aes(x = Quarter, y = meanANALYST))
+
 ##### China All Caps
 
 #+ results='asis'
@@ -1871,3 +1908,139 @@ fund_alphas_4factor_china_10y <- do.call("rbind", list(fund_alphas_china_4factor
 ggplot(fund_alphas_4factor_china_10y , 
        aes(x = estimate, color = benchmark)) + geom_density() + xlim(-2.5, 2.5)
 
+
+
+#### Descriptive Statistics Tables
+colnames(Full_Equity_Panel)
+Full_Equity_Panel$`Investment Area`[Full_Equity_Panel$`Investment Area` == "Asia Pacific ex Japan ex Australia"]  <- "Asia Pacific ex Japan" 
+
+FundSizePanel <- Full_Equity_Panel %>%  
+  select(FundID, date1, year, month, FundSize, MonthlyReturn, `Investment Area`) %>%
+  filter(month == 12) %>% 
+  group_by(`Investment Area`, year) %>% 
+  rename(Region = `Investment Area`) %>% 
+  summarise(
+    MeanFundSize = round(quantile(FundSize, 0.5, na.rm = TRUE),0)/1000000,
+    NinetyPercFundSize = round(quantile(FundSize, 0.9, na.rm   = TRUE),0)/1000000,
+    OnePercFundSize = round(quantile(FundSize, 0.1, na.rm   = TRUE),0)/1000000,
+    StDFundSize = round(sd(FundSize, na.rm = TRUE),0)/1000000
+  ) 
+
+FundSizeWide <- round(dcast(melt(FundSizePanel, id.vars=c("year", "Region")), year~variable+Region), 3)
+
+ReturnPanel <- Full_Equity_Panel %>%  
+  select(FundID, date1, year, month, FundSize, MonthlyReturn, `Investment Area`) %>%
+  arrange(FundID, date1) %>% 
+  group_by(FundID, year) %>% 
+  mutate(MonthlyReturn = MonthlyReturn/100) %>% 
+  mutate(AnnualReturn = cumprod(1+MonthlyReturn) -1) %>% 
+  mutate(AnnualReturn = AnnualReturn *100) %>% 
+  ungroup() %>% 
+  filter(month == 12) %>% 
+  group_by(`Investment Area`, year) %>% 
+  rename(Region = `Investment Area`) %>% 
+  summarise(
+    MeanReturn = quantile(AnnualReturn, 0.5, na.rm = TRUE),
+    NinetyPercReturn = quantile(AnnualReturn, 0.9, na.rm   = TRUE),
+    OnePercReturn = quantile(AnnualReturn, 0.1, na.rm   = TRUE),
+    StDReturn = sd(AnnualReturn, na.rm = TRUE)
+  ) 
+
+ReturnWide <- round(dcast(melt(ReturnPanel, id.vars=c("year", "Region")), year~variable+Region), 2)
+
+FundSizeWide <- FundSizeWide %>% 
+  remove_rownames %>% 
+  column_to_rownames(var = "year") %>% 
+  select("OnePercFundSize_China",
+         "MeanFundSize_China",
+         "NinetyPercFundSize_China",
+         "OnePercFundSize_Asia Pacific ex Japan",
+         "MeanFundSize_Asia Pacific ex Japan",
+         "NinetyPercFundSize_Asia Pacific ex Japan",
+         "OnePercFundSize_Asia Emerging Mkts",
+         "MeanFundSize_Asia Emerging Mkts",
+         "NinetyPercFundSize_Asia Emerging Mkts",
+         "OnePercFundSize_India",
+         "MeanFundSize_India",
+         "NinetyPercFundSize_India")
+         
+
+#+ results='asis'
+htmlTable(round(FundSizeWide, 0),
+          header = rep(c("10%", "50%", "90%"),4),
+          rnames =  rownames(DescriptiveTable),
+          cgroup = c("China", "AsiaPac ex Japan", "Asia EM", "India"),
+          n.cgroup = c(3,3,3,3),
+          caption= "Basic properties of the fund sample data - Fund Size in Mio. Euro")
+
+
+ReturnWide <- ReturnWide %>% 
+  remove_rownames %>% 
+  column_to_rownames(var = "year") %>% 
+  select(
+"MeanReturn_China",
+"StDReturn_China",
+"MeanReturn_Asia Pacific ex Japan",
+"StDReturn_Asia Pacific ex Japan",
+"MeanReturn_Asia Emerging Mkts",
+"StDReturn_Asia Emerging Mkts",
+"MeanReturn_India",
+"StDReturn_India"
+  )
+
+
+#+ results='asis'
+htmlTable(round(ReturnWide, 1),
+          header = rep(c("Mean", "SD"),4),
+          rnames =  rownames(ReturnWide),
+          cgroup = c("China", "Asia Pac", "Asia EM", "India"),
+          n.cgroup = c(2, 2, 2, 2),
+          caption= "Basic properties of the fund sample data - Annual Returns in Percent",
+          ctable = TRUE)
+
+CountPanel <- Full_Equity_Panel %>%  
+  select(FundID, date1, year, month, FundSize, MonthlyReturn, `Investment Area`) %>%
+  filter(month == 12) %>% 
+  group_by(`Investment Area`, year) %>% 
+  rename(Region = `Investment Area`) %>% 
+  count()
+
+CountWide <- dcast(CountPanel, year ~ Region, value.var = "n")
+
+TotalAuMPanel <- Full_Equity_Panel %>%  
+  select(FundID, date1, year, month, FundSize, MonthlyReturn, `Investment Area`) %>%
+  filter(month == 12) %>% 
+  group_by(`Investment Area`, year) %>% 
+  rename(Region = `Investment Area`) %>% 
+  summarise(TotalAUM = sum(FundSize, na.rm = TRUE)/1000000000)
+
+TotalWide <- dcast(TotalAuMPanel, year ~ Region, value.var = "TotalAUM")
+
+AverageSizePanel <- Full_Equity_Panel %>%  
+  select(FundID, date1, year, month, FundSize, MonthlyReturn, `Investment Area`) %>%
+  filter(month == 12) %>% 
+  group_by(`Investment Area`, year) %>% 
+  rename(Region = `Investment Area`) %>% 
+  summarise(
+    AverageAuM = mean(FundSize, na.rm = TRUE)/1000000)
+
+AverageWide <- dcast(AverageSizePanel, year ~ Region, value.var = "AverageAuM")
+
+
+CountWide <- CountWide %>% 
+  left_join(AverageWide, by = "year") %>% 
+  left_join(TotalWide, by = "year") %>% 
+  remove_rownames %>% 
+  column_to_rownames(var = "year")
+
+#+ results='asis'
+htmlTable(round(CountWide,0),
+          header = rep(c("EM", "ExJpn", "China", "India"),3),
+          rnames =  rownames(CountWide),
+          cgroup = c("Number of funds", "Average AuM (Mio.)", "Total AuM (Bn.)"),
+          n.cgroup = c(4, 4, 4),
+          ctable = TRUE)
+
+Full_Equity_Panel %>%  
+  distinct(FundID) %>% 
+  count()
